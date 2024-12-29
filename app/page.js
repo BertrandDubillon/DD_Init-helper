@@ -1,95 +1,224 @@
+"use client";
 import Image from "next/image";
 import styles from "./page.module.css";
+import {
+  Box,
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
+  Button,
+  IconButton,  
+} from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import DoneIcon from '@mui/icons-material/Done';
+import CloseIcon from '@mui/icons-material/Close';
+import { flexbox, positions } from "@mui/system";
+import { useState } from "react";
+import { Edu_VIC_WA_NT_Beginner } from "next/font/google";
+
+/*TODO 
+Remove floating numbers from number inputs
+Editing characters
+Styling the table
+Improving the delete character button (style, hover)
+If the HP of a character is 0, make the line red or crossed
+Add a fixed ammount of Init next to the roll to account for bonuses, then show the sum
+Add a cool Icon for the tab :)
+
+Turn feature
+  - Have a start button to have a turn counter set to 1 and highlight the first player to play
+  - Then have a Next and Reset button show up in place of Start
+  - Next button higlights the next character if not dead
+  - Next button should loop from the last character to play to the first one and increment the turn counter
+  - Reset will reset the counter, the highlights and show the Start button again
+  - Make the Reset button need a confirmation to reset
+
+Saving progress
+  - Save the character list and the number of turns and current player locally
+
+*/
+
+// Component to delete a character from the list, asking for confirmation
+function DeleteCharButton({deleteCharacter, characterID, charactersArray}) {
+  const [isDeleteClicked, setIsDeleteClicked] = useState(false);
+  const handleClick = () => {
+    setIsDeleteClicked(true);
+  };
+  return (
+    isDeleteClicked ?
+    <Box>
+    <IconButton onClick ={()=>deleteCharacter(characterID, charactersArray)}><DoneIcon/></IconButton>
+    <IconButton onClick={()=>setIsDeleteClicked(false)}><CloseIcon/></IconButton>
+    </Box>
+    :
+    <IconButton aria-label="delete" onClick={handleClick}> 
+    <DeleteIcon/>  
+    </IconButton>
+    
+  );
+};
+
+// Table component
+function InitTable({ charactersArray, deleteCharacter }) {
+  
+  // Sorting from highest to lowest Initiative
+  const sortedCharactersArray = charactersArray.sort((a, b) => b.init - a.init);
+
+  return (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Name</TableCell>
+          <TableCell>Init</TableCell>
+          <TableCell>Hp</TableCell>
+          <TableCell>X</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {sortedCharactersArray.map((character) => {
+          return (
+            <TableRow key={character.id}>
+              <TableCell>{character.name}</TableCell>
+              <TableCell>{character.init}</TableCell>
+              <TableCell onClick={()=>{console.log('click');
+              }}>{character.hp}</TableCell>
+              <TableCell>
+                {/* <Button                
+                onClick={()=>{deleteCharacter(character.id, charactersArray)}}
+                size="small"
+                >X</Button> */}
+                <DeleteCharButton 
+                deleteCharacter={deleteCharacter} 
+                characterID={character.id} 
+                charactersArray={charactersArray}/>
+                </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
+  );
+}
+
+// Component to add a new Character to the state
+function AddNewChar({ addCharacter }) {
+
+  const defaultName = '';
+  const defaultInit = 0;
+  const defaultHP = 0;
+
+  const [name, setName] = useState(defaultName);
+  const [init, setInit] = useState(defaultInit);
+  const [hp, setHp] = useState(defaultHP);
+
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", width: 450, marginLeft : 'auto', border : 1, p:2}}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          // trim() removes white spaces before and after input. Used to check if name isnt blank
+          if (name.trim() !== '' && init !== 0 && hp !== 0)
+          addCharacter(name, init, hp);
+        }}
+      >
+        <Box sx={{ display: "flex"}}>
+          <Box padding={2} width={100}>
+            Name
+          </Box>
+          <TextField
+            id="name"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+          />
+        </Box>
+        <Box sx={{ display: "flex" }}>
+          <Box p={2} width={100}>
+            Init
+          </Box>
+          <TextField
+            id="init"
+            value={init}
+            type="number"            
+            onChange={(e) => {
+              // regex to removes leading zeros
+              setInit(e.target.value.replace(/^0+/, ''));
+            }}
+          />
+          <Button
+            sx={{ alignSelf: "center", marginLeft : 'auto'}}
+            variant="contained"
+            color="primary"
+            onClick={() => setInit(Math.trunc(Math.random() * 20) + 1)}
+          >
+            Roll
+          </Button>
+        </Box>
+        <Box sx={{ display: "flex" }}>
+          <Box p={2} width={100}>
+            Hp
+          </Box>
+          <TextField
+            id="hp"
+            type="number"
+            value={hp}
+            onChange={(e) => {
+              setHp(e.target.value.replace(/^0+/, ''));
+            }}
+          />
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap : 2, paddingTop : 1 }}>
+        <Button variant="contained" color="primary"
+        onClick={()=>{setName(defaultName); setHp(defaultHP); setInit(defaultInit);}}>
+            Reset
+          </Button>
+          <Button variant="contained" color="primary" type="submit">
+            Add
+          </Button>
+        </Box>
+      </form>
+    </Box>
+  );
+}
+
+
+
+// APP
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  //State
+  const [charactersArray, setCharactersArray] = useState([]);
+  //ID counter, used to make sure every character has a different key
+  const [currentID, setCurentID] = useState(1);
+
+  //Function to add a character to the list
+  const addCharacter = (charName, charInit, charHp) => {
+    const newCharacter = {
+      id: currentID,
+      name: charName,
+      init: charInit,
+      hp: charHp,
+    };
+    setCharactersArray([...charactersArray, newCharacter]);
+    setCurentID(currentID + 1);
+  };
+
+  //Function to delete a character from the list.
+  const deleteCharacter = (characterID, charactersArray) => {    
+    const newCharacterArray = charactersArray.filter((char)=> {return char.id !== characterID});
+    setCharactersArray(newCharacterArray);
+  }
+
+  return (
+    <Container>
+      <AddNewChar addCharacter={addCharacter} />
+      <InitTable charactersArray={charactersArray} deleteCharacter={deleteCharacter} />
+    </Container>
   );
 }
