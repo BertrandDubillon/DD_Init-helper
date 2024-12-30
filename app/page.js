@@ -11,14 +11,17 @@ import {
   TableRow,
   TextField,
   Button,
-  IconButton,  
+  IconButton,
+  TableContainer,
+  Typography,  
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { flexbox, positions } from "@mui/system";
+import { flexbox, positions, textAlign } from "@mui/system";
 import { useState } from "react";
 import { Edu_VIC_WA_NT_Beginner } from "next/font/google";
+import { WrapText } from "@mui/icons-material";
 
 /*TODO 
 Remove floating numbers from number inputs
@@ -42,6 +45,8 @@ Saving progress
 
 */
 
+
+
 // Component to delete a character from the list, asking for confirmation
 function DeleteCharButton({deleteCharacter, characterID, charactersArray}) {
   const [isDeleteClicked, setIsDeleteClicked] = useState(false);
@@ -50,7 +55,7 @@ function DeleteCharButton({deleteCharacter, characterID, charactersArray}) {
   };
   return (
     isDeleteClicked ?
-    <Box>
+    <Box >
     <IconButton onClick ={()=>deleteCharacter(characterID, charactersArray)}><DoneIcon/></IconButton>
     <IconButton onClick={()=>setIsDeleteClicked(false)}><CloseIcon/></IconButton>
     </Box>
@@ -69,24 +74,26 @@ function InitTable({ charactersArray, deleteCharacter }) {
   const sortedCharactersArray = charactersArray.sort((a, b) => b.init - a.init);
 
   return (
-    <Table>
+    <TableContainer sx={{width : 'max-content', margin : 'auto', marginTop : 1}}>
+    <Table> 
       <TableHead>
-        <TableRow>
-          <TableCell>Name</TableCell>
-          <TableCell>Init</TableCell>
-          <TableCell>Hp</TableCell>
-          <TableCell>X</TableCell>
+        <TableRow >
+          <TableCell sx={{width : 200, textAlign:'center'}}>Name</TableCell>
+          <TableCell sx={{width : 100, textAlign:'right'}}>Init</TableCell>
+          <TableCell sx={{width : 100, textAlign:'right'}}>Hp</TableCell>
+          <TableCell sx={{width : 200, textAlign:'center'}}>X</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {sortedCharactersArray.map((character) => {
           return (
-            <TableRow key={character.id}>
-              <TableCell>{character.name}</TableCell>
-              <TableCell>{character.init}</TableCell>
+            <TableRow key={character.id} onClick={()=>{console.log('row');
+            }}>
+              <TableCell sx={{textAlign:'center'}}>{character.name}</TableCell>
+              <TableCell sx={{textAlign:'right'}}>{character.init}</TableCell>
               <TableCell onClick={()=>{console.log('click');
-              }}>{character.hp}</TableCell>
-              <TableCell>
+              }} sx={{textAlign:'right'}}>{character.hp}</TableCell>
+              <TableCell sx={{textAlign:'center'}}>
                 {/* <Button                
                 onClick={()=>{deleteCharacter(character.id, charactersArray)}}
                 size="small"
@@ -101,6 +108,7 @@ function InitTable({ charactersArray, deleteCharacter }) {
         })}
       </TableBody>
     </Table>
+    </TableContainer>
   );
 }
 
@@ -186,6 +194,61 @@ function AddNewChar({ addCharacter }) {
   );
 }
 
+function EditSelectedChar({selectedName, selectedInit, selectedHp}) {
+  const [editHP, setEditHp] = useState(selectedHp);
+  const [editInit, setEditInit] = useState(selectedInit);
+
+  return(
+  <Box 
+  sx={{ display: "flex",
+    flexDirection: "column",
+    width: 300,    
+    border : 1,
+    p:2}}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          // trim() removes white spaces before and after input. Used to check if name isnt blank
+          if (name.trim() !== '' && init !== 0 && hp !== 0)
+          addCharacter(name, init, hp);
+        }}
+      >
+      <Typography>Current Character</Typography>
+      <Box>
+        <Typography>{selectedName}</Typography>      
+      </Box>
+      <Box sx={{ display: "flex" }}>
+          <Box p={2} width={100}>
+            Init
+          </Box>
+          <TextField
+            id="init"
+            value={selectedInit}
+            type="number"            
+            onChange={(e) => {
+              // regex to removes leading zeros
+              setEditInit(e.target.value.replace(/^0+/, ''));
+            }}
+          />
+          </Box>
+          <Box sx={{ display: "flex" }}>
+          <Box p={2} width={100}>
+            Hp
+          </Box>
+          <TextField
+            id="hp"
+            type="number"
+            value={selectedHp}
+            onChange={(e) => {
+              setEditHp(e.target.value.replace(/^0+/, ''));
+            }}
+          />
+        </Box>
+        </form>
+  </Box>
+)
+}
+
 
 
 // APP
@@ -217,7 +280,10 @@ export default function Home() {
 
   return (
     <Container>
+      <Box sx={{display : 'flex'}}>
+      <EditSelectedChar></EditSelectedChar>
       <AddNewChar addCharacter={addCharacter} />
+      </Box>
       <InitTable charactersArray={charactersArray} deleteCharacter={deleteCharacter} />
     </Container>
   );
