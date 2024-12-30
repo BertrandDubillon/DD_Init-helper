@@ -18,7 +18,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { flexbox, positions, textAlign } from "@mui/system";
+import { bgcolor, flexbox, positions, style, textAlign } from "@mui/system";
 import { useEffect, useState } from "react";
 import { Edu_VIC_WA_NT_Beginner } from "next/font/google";
 import { Refresh, WrapText } from "@mui/icons-material";
@@ -85,8 +85,9 @@ function InitTable({ charactersArray, deleteCharacter, editChar }) {
       <TableBody>
         {sortedCharactersArray.map((character) => {
           return (
-            <TableRow key={character.id} onClick={()=>{(editChar(character));
-            }}>
+            <TableRow key={character.id} onClick={()=>{(editChar(character)) 
+            }} bgcolor={character.hp==0?'red':'white'}
+            >
               <TableCell sx={{textAlign:'center'}}>{character.name}</TableCell>
               <TableCell sx={{textAlign:'right'}}>{character.init}</TableCell>
               <TableCell onClick={()=>{console.log('click');
@@ -192,6 +193,7 @@ function AddNewChar({ addCharacter }) {
   );
 }
 
+//Component to Edit a character
 function EditSelectedChar({characterToEdit, updateSelectedCharacter}) {  
 
   const [editHP, setEditHp] = useState(characterToEdit.hp);
@@ -248,7 +250,7 @@ function EditSelectedChar({characterToEdit, updateSelectedCharacter}) {
             type="number"
             value={editHP}
             onChange={(e) => {
-              setEditHp(e.target.value.replace(/^0+/, ''));
+              setEditHp(e.target.value);
             }}
           />
         </Box>
