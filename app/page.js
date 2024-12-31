@@ -18,17 +18,14 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { bgcolor, flexbox, positions, style, textAlign } from "@mui/system";
 import { useEffect, useState } from "react";
-import { Edu_VIC_WA_NT_Beginner } from "next/font/google";
-import { Refresh, WrapText } from "@mui/icons-material";
 
 /*TODO 
 Remove floating numbers from number inputs
 Styling the table
-If the HP of a character is 0, make the line red or crossed
-Add a fixed ammount of Init next to the roll to account for bonuses, then show the sum
 Add a cool Icon for the tab :)
+- If the character name is a number + letter, make the number increment
+  ex : 1A will become 2A, then 3A if another one is added. To make it easier to generate 'packs'
 
 Turn feature
   - Have a start button to have a turn counter set to 1 and highlight the first player to play
@@ -86,7 +83,7 @@ function InitTable({ charactersArray, deleteCharacter, editChar }) {
         {sortedCharactersArray.map((character) => {
           return (
             <TableRow key={character.id} onClick={()=>{(editChar(character)) 
-            }} bgcolor={character.hp==0?'red':'white'}
+            }} bgcolor={character.hp<=0?'red':'white'}
             >
               <TableCell sx={{textAlign:'center'}}>{character.name}</TableCell>
               <TableCell sx={{textAlign:'right'}}>{character.init}</TableCell>
@@ -117,19 +114,26 @@ function AddNewChar({ addCharacter }) {
   const defaultName = '';
   const defaultInit = 0;
   const defaultHP = 0;
+  const defaultFixedInit = 0;
+  const defaultTotalInit = 0;
 
   const [name, setName] = useState(defaultName);
   const [init, setInit] = useState(defaultInit);
   const [hp, setHp] = useState(defaultHP);
+  const [fixedInit, setFixedInit] = useState(defaultFixedInit);
+  const [totalInit, setTotalInit] = useState(defaultTotalInit);
+
+  useEffect(()=>(setTotalInit(init*1 + fixedInit*1)),[init, fixedInit]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", width: 450, marginLeft : 'auto', border : 1, p:2}}>
       <form
+      style={{ display: "flex", flexDirection: "column", gap:8}}
         onSubmit={(e) => {
           e.preventDefault();
           // trim() removes white spaces before and after input. Used to check if name isnt blank
-          if (name.trim() !== '' && init !== 0 && hp !== 0)
-          addCharacter(name, init, hp);
+          if (name.trim() !== '' && totalInit !== 0 && hp !== 0)
+          addCharacter(name, totalInit, hp);
         }}
       >
         <Box sx={{ display: "flex"}}>
@@ -144,19 +148,37 @@ function AddNewChar({ addCharacter }) {
             }}
           />
         </Box>
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: "flex", justifyContent:'space-between' }}>
           <Box p={2} width={100}>
             Init
           </Box>
+          <Box sx={{display : 'flex', gap:1}}>
           <TextField
+            label = 'Random'
             id="init"
             value={init}
-            type="number"            
+            type="number"
+            sx={{width : 75}}          
             onChange={(e) => {
               // regex to removes leading zeros
               setInit(e.target.value.replace(/^0+/, ''));
             }}
           />
+          <Typography sx={{alignContent:'center'}}>+</Typography>
+          <TextField
+            label = 'Fixed'
+            id="fixedInit"
+            value={fixedInit}
+            type="number"  
+            sx={{width : 75}}          
+            onChange={(e) => {
+              // regex to removes leading zeros
+              setFixedInit(e.target.value.replace(/^0+/, ''));
+            }}
+          />
+          <Typography sx={{alignContent:'center'}}> = {totalInit} </Typography>          
+          
+          </Box>
           <Button
             sx={{ alignSelf: "center", marginLeft : 'auto'}}
             variant="contained"
@@ -181,7 +203,7 @@ function AddNewChar({ addCharacter }) {
         </Box>
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap : 2, paddingTop : 1 }}>
         <Button variant="contained" color="primary"
-        onClick={()=>{setName(defaultName); setHp(defaultHP); setInit(defaultInit);}}>
+        onClick={()=>{setName(defaultName); setHp(defaultHP); setInit(defaultInit); setFixedInit(defaultFixedInit);}}>
             Reset
           </Button>
           <Button variant="contained" color="primary" type="submit">
@@ -210,7 +232,8 @@ function EditSelectedChar({characterToEdit, updateSelectedCharacter}) {
     width: 300,    
     border : 1,
     p:2}}>
-      <form onSubmit={(e)=>{
+      <form
+      style={{display:'flex', flexDirection:'column', gap:8}} onSubmit={(e)=>{
         e.preventDefault();
         const editedChar = {id : characterToEdit.id, name:characterToEdit.name, init:editInit, hp:editHP};
         if (editedChar.init !== characterToEdit.init || editedChar.hp !== characterToEdit.hp){
