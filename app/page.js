@@ -24,21 +24,10 @@ import { useEffect, useState } from "react";
 Remove floating numbers from number inputs
 Styling the table
 Add a cool Icon for the tab :)
-- If the character name is a number + letter, make the number increment
-  ex : 1A will become 2A, then 3A if another one is added. To make it easier to generate 'packs'
-
-Turn feature
-  - Have a start button to have a turn counter set to 1 and highlight the first player to play
-  - Then have a Next and Reset button show up in place of Start
-  - Next button higlights the next character if not dead
-  
-  - Next button should loop from the last character to play to the first one and increment the turn counter
-  - Reset will reset the counter, the highlights and show the Start button again
-  - Make the Reset button need a confirmation to reset
+Make the table dragable, and focus on the higlighted row (current turn)
 
 Saving progress
   - Save the character list and the number of turns and current player locally
-
 */
 
 // Component to delete a character from the list, asking for confirmation
@@ -122,7 +111,7 @@ function InitTable({ charactersArray, deleteCharacter, editChar }) {
 }
 
 // Component to add a new Character to the state
-function AddNewChar({ addCharacter }) {
+function AddNewChar({ addCharacter,charactersArray }) {
   const defaultName = "";
   const defaultInit = 0;
   const defaultHP = 0;
@@ -345,8 +334,7 @@ export default function Home() {
   //State
   const [charactersArray, setCharactersArray] = useState([]);
   const [sortedCharactersArray, setSortedCharactersArray] = useState([]);
-  const [turnCounter, setTurnCounter] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
+  const [turnCounter, setTurnCounter] = useState(0);  
   const [isStartPressed, setIsStartPressed] = useState(false);
   const [isNextTurnTriggered, setIsNextTurnTriggered] = useState(false);
    //ID counter, used to make sure every character has a different key
@@ -367,6 +355,7 @@ export default function Home() {
     if (isNextTurnTriggered) {
       nextTurn(sortedCharactersArray);      
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[isNextTurnTriggered]);
 
   //Function to track fights
@@ -433,6 +422,8 @@ export default function Home() {
 
   //Function to add a character to the list
   const addCharacter = (charName, charInit, charHp) => {
+    charName = packNames(charName, charactersArray);
+    
     const newCharacter = {
       id: currentID,
       name: charName,
@@ -441,9 +432,64 @@ export default function Home() {
       isActive: false,
       hasPlayed: false,
     };
+    
     setCharactersArray([...charactersArray, newCharacter]);
     setCurrentID(currentID + 1);
+  
   };
+  
+  //Function to check if a name exist under the form NumberLetter (1A) and increment
+  // the number if it does.
+
+  const packNames = (charName, charArray)=>{  
+    //testing for a number followed by a letter  
+    const regex = /^(\d+)([A-Z])$/;
+    //checking if the name matches the regex
+    const match = charName.match(regex);
+    //if not, use the charName
+    if (!match){
+      return charName
+    }
+
+    //if it does, check if it exists in the array
+    else {
+      console.log('testing' + JSON.stringify(charName) + 'and '+ JSON.stringify(charArray));
+      
+      const existsInArray = charArray.find((char)=>char.name === charName)
+      
+      //if it doesn't exist, use the charName
+      if (!existsInArray){
+        return charName
+      }
+      //if it does exist, find the highest number related to the letter    
+      else{
+        //destructuring the match array to get the number and letter in variables
+       const [_, number, letter] = match;
+        //looking for all names in the array with that letter
+        const allLetterNames = charArray.filter((char)=>{
+          const match = (char.name).match(regex);
+          return (match && (match[2]===letter));
+          
+          
+        })
+       
+        //get the highest number of that array
+        let maxNumber = 1;
+        allLetterNames.forEach(element => {
+          const match = (element.name).match(regex);
+          if(match){
+            console.log('is' + match[1] + '>' + maxNumber);
+            if (match[1] > maxNumber){
+              maxNumber = match[1];
+            }
+          }
+          
+        }); 
+        //returning the highest number+1 and letter       
+        return `${(maxNumber*1)+1}${letter}`
+      }
+    }
+  }
 
   //Function to delete a character from the list.
   const deleteCharacter = (characterID, charactersArray) => {
@@ -501,6 +547,7 @@ export default function Home() {
     setIsNextTurnTriggered(false);
   };
 
+  //Home() return
   return (
     <Container>
       <Box sx={{ display: "flex" }}>
