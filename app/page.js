@@ -30,6 +30,12 @@ Saving progress
   - Save the character list and the number of turns and current player locally
 */
 
+/*Bugs to fix or features to correct/improve
+Make it so you can go higher than 10 when generating 1A names
+If you add characters at the end of a turn but before the next one, they'll "play"
+before the next turn. Need a new property to adress that, like 'justCreated' or smthg.
+*/
+
 // Component to delete a character from the list, asking for confirmation
 function DeleteCharButton({ deleteCharacter, characterID, charactersArray }) {
   const [isDeleteClicked, setIsDeleteClicked] = useState(false);
@@ -452,11 +458,8 @@ export default function Home() {
     }
 
     //if it does, check if it exists in the array
-    else {
-      console.log('testing' + JSON.stringify(charName) + 'and '+ JSON.stringify(charArray));
-      
+    else {      
       const existsInArray = charArray.find((char)=>char.name === charName)
-      
       //if it doesn't exist, use the charName
       if (!existsInArray){
         return charName
@@ -478,7 +481,6 @@ export default function Home() {
         allLetterNames.forEach(element => {
           const match = (element.name).match(regex);
           if(match){
-            console.log('is' + match[1] + '>' + maxNumber);
             if (match[1] > maxNumber){
               maxNumber = match[1];
             }
