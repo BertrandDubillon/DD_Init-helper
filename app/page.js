@@ -348,110 +348,89 @@ export default function Home() {
   const [turnCounter, setTurnCounter] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [isStartPressed, setIsStartPressed] = useState(false);
+  const [isNextTurnTriggered, setIsNextTurnTriggered] = useState(false);
+   //ID counter, used to make sure every character has a different key
+   const [currentID, setCurrentID] = useState(1);
+   const [characterToEdit, setCharacterToEdit] = useState({
+     name: "",
+     init: 0,
+     hp: 0,
+   });
 
   // Sorting from highest to lowest Initiative
   useEffect(() => {
     setSortedCharactersArray(charactersArray.sort((a, b) => b.init - a.init));
   }, [charactersArray]);
-  //ID counter, used to make sure every character has a different key
-  const [currentID, setCurrentID] = useState(1);
-  const [characterToEdit, setCharacterToEdit] = useState({
-    name: "",
-    init: 0,
-    hp: 0,
-  });
+ 
+  // Handles the next turn trigger
+  useEffect(()=>{
+    if (isNextTurnTriggered) {
+      nextTurn(sortedCharactersArray);      
+    };
+  },[isNextTurnTriggered]);
 
   //Function to track fights
-  //Starting the fight with the Start button
-  /*
-  If the array has items   
-  highlight first player not dead in the init array by setting its object property to
-  isActive = true  and changing the row background to 'green' accordingly
-  Show the character in the edit window
-  Hide Start Button and show Next and Reset
-  set number of turns to 0
-  */
-  /////OBSOLETE
-  // const startFight = () => {
-  //   if (sortedCharactersArray.length > 0) {
-  //     // ? and if to test if there is any character with more than 0hp to start with.
-  //     let activePlayerID = sortedCharactersArray.find(
-  //       (char) => char.hp > 0
-  //     )?.id;
-  //     if (activePlayerID) {
-  //       setCharactersArray(
-  //         charactersArray.map((char) => {
-  //           if (char.id === activePlayerID) {
-  //             return {
-  //               ...char,
-  //               isActive: true,
-  //             };
-  //           } else {
-  //             return {
-  //               ...char,
-  //               isActive: false,
-  //             };
-  //           }
-  //         })
-  //       );
-  //       selectedCharacter(
-  //         charactersArray.find((char) => char.id === activePlayerID)
-  //       );
-  //       setTurnCounter(0);
-  //     }
-  //   }
-  // };
-  //Next button
-  /*
-  On click, get the next character in sortedArray with hp > 0
-  highlight it
-  display it in the edit window
-  if there is no character left (reached last index) start from index[0] and increment 
-  the turncounter by 1
-
-   */
-
   const nextTurn = (sortedCharactersArray) => {
+    //resetting the trigger
+    setIsNextTurnTriggered(false);
     if (sortedCharactersArray.length > 0) {
-      for (
-        let index = charIndex;
-        index < sortedCharactersArray.length;
-        index++
-      ) {
-        if (index === 0) {
-          setTurnCounter(turnCounter + 1);
-        }
-        const element = sortedCharactersArray[index];
-
-        if (element.hp > 0) {
-          selectedCharacter(element);
-          setCharactersArray(
-            charactersArray.map((char) => {
-              if (char.id === element.id) {
-                return {
-                  ...char,
-                  isActive: true,
-                };
-              } else {
-                return {
-                  ...char,
-                  isActive: false,
-                };
-              }
-            })
-          );
-          let newIndex = 0;
-          if (index + 1 >= sortedCharactersArray.length) {
-            newIndex = 0;
-          } else {
-            newIndex = index + 1;
+      for (let index = 0; index < sortedCharactersArray.length; index++) {
+        const element = sortedCharactersArray[index];        
+        // If a character that has not played and has over 0 hp is found
+        if (element.hasPlayed === false) {
+          if (element.hp > 0) {
+            //Display it in the edit window
+            selectedCharacter(element);
+            //Highlight his row and assign True to hasPlayed
+            setCharactersArray(
+              charactersArray.map((char) => {
+                if (char.id === element.id) {
+                  return {
+                    ...char,
+                    isActive: true,
+                    hasPlayed: true,
+                  };
+                } else {
+                  return {
+                    ...char,
+                    isActive: false,
+                  };
+                }
+              })
+            ); 
+            // exit the turn           
+            return;
           }
-          setCharIndex(newIndex);
-          return;
         }
       }
+      // if no valid character is found, resets all of them
+      //Checks if any character has more than 0 hp to continue
+      const allDead = sortedCharactersArray.every((char)=>{ return char.hp<=0});
+
+      //If there is at least one character alive
+      if (!allDead){
+        
+      //resets the properties
+      setCharactersArray(
+        charactersArray.map((char) => {
+          return {
+            ...char,
+            isActive: false,
+            hasPlayed: false,
+          };
+        })
+      );
+      //increment the turn counter
+      setTurnCounter(turnCounter + 1);
+      //trigger the next turn
+      setTimeout(() => {
+        setIsNextTurnTriggered(true);
+      }, 0);           
     }
+    //if they're all dead, do not do anything    
   };
+}
+
   //Function to add a character to the list
   const addCharacter = (charName, charInit, charHp) => {
     const newCharacter = {
@@ -460,6 +439,7 @@ export default function Home() {
       init: charInit,
       hp: charHp,
       isActive: false,
+      hasPlayed: false,
     };
     setCharactersArray([...charactersArray, newCharacter]);
     setCurrentID(currentID + 1);
@@ -499,23 +479,27 @@ export default function Home() {
     );
   };
 
+  //Function to handle the next turn trigger
+  const handleNextTurn = ()=>{
+    setIsNextTurnTriggered(true);
+  }
+
   //Function to reset the Turn Feature
-  const resetTurns = ()=>{
+  const resetTurns = () => {
     setTurnCounter(0);
     setCharIndex(0);
     setCharactersArray(
       charactersArray.map((char) => {
-        
-          return {
-            ...char,
-            isActive: false,
-          };
-        }))
-        setIsStartPressed(false);
-      };
-    
- 
-  
+        return {
+          ...char,
+          isActive: false,
+          hasPlayed: false,
+        };
+      })
+    );
+    setIsStartPressed(false);
+    setIsNextTurnTriggered(false);
+  };
 
   return (
     <Container>
@@ -525,30 +509,30 @@ export default function Home() {
           updateSelectedCharacter={updateSelectedCharacter}
         ></EditSelectedChar>
         {isStartPressed ? (
-          <><Button
-            variant="contained"
-            type="button"
-            onClick={() => nextTurn(sortedCharactersArray)}
-          >
-            Next
-            {turnCounter}
-          </Button>
-          <Button
-          variant="contained"
-          type="button"
-          onClick={() => resetTurns()}
-        >
-          Reset
-          
-        </Button>
-        </>
+          <>
+            <Button
+              variant="contained"
+              type="button"
+              onClick={handleNextTurn}
+            >
+              Next
+              {turnCounter}
+            </Button>
+            <Button
+              variant="contained"
+              type="button"
+              onClick={() => resetTurns()}
+            >
+              Reset
+            </Button>
+          </>
         ) : (
           <Button
             variant="contained"
             type="button"
             onClick={() => {
               if (sortedCharactersArray.length > 0) {
-                nextTurn(sortedCharactersArray);
+                handleNextTurn();
                 setIsStartPressed(true);
               }
             }}
@@ -567,3 +551,4 @@ export default function Home() {
     </Container>
   );
 }
+
