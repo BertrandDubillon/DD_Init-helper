@@ -534,8 +534,7 @@ export default function Home() {
 
   //Function to reset the Turn Feature
   const resetTurns = () => {
-    setTurnCounter(0);
-    setCharIndex(0);
+    setTurnCounter(0);    
     setCharactersArray(
       charactersArray.map((char) => {
         return {
