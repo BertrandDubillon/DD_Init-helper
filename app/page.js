@@ -67,14 +67,14 @@ function DeleteCharButton({ deleteCharacter, characterID, charactersArray }) {
 function InitTable({ charactersArray, deleteCharacter, editChar }) {
   function rowBgColor(character) {
     if (character.hp <= 0) {
-      return 'red'
+      return "red";
     }
-    if (character.isActive === true){
-      return 'green'
-    } 
-    return 'white'
+    if (character.isActive === true) {
+      return "green";
+    }
+    return "white";
   }
-  
+
   return (
     <TableContainer sx={{ width: "max-content", margin: "auto", marginTop: 1 }}>
       <Table>
@@ -346,11 +346,13 @@ export default function Home() {
   const [charactersArray, setCharactersArray] = useState([]);
   const [sortedCharactersArray, setSortedCharactersArray] = useState([]);
   const [turnCounter, setTurnCounter] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [isStartPressed, setIsStartPressed] = useState(false);
 
   // Sorting from highest to lowest Initiative
-  useEffect(()=>{
-    setSortedCharactersArray(charactersArray.sort((a, b) => b.init - a.init))},[charactersArray]
-  )
+  useEffect(() => {
+    setSortedCharactersArray(charactersArray.sort((a, b) => b.init - a.init));
+  }, [charactersArray]);
   //ID counter, used to make sure every character has a different key
   const [currentID, setCurrentID] = useState(1);
   const [characterToEdit, setCharacterToEdit] = useState({
@@ -368,41 +370,88 @@ export default function Home() {
   Show the character in the edit window
   Hide Start Button and show Next and Reset
   set number of turns to 0
-  */ 
-  const startFight = ()=>{
-  if (sortedCharactersArray.length > 0){  
-    // ? and if to test if there is any character with more than 0hp to start with.  
-    let activePlayerID = sortedCharactersArray.find((char)=>char.hp>0)?.id;
-    if (activePlayerID) {
-       setCharactersArray(
-      charactersArray.map((char) => {
-        if (char.id === activePlayerID) {
-          return {
-            ...char,
-            isActive : true,
-          };
-        } else {
-          return {
-            ...char,
-            isActive : false};
-        }
-      })
-    );
-    selectedCharacter(charactersArray.find((char)=>char.id===activePlayerID));
-    setTurnCounter(0);
-    }
-    
-       
-   
-    
-        
-  }
-}
+  */
+  /////OBSOLETE
+  // const startFight = () => {
+  //   if (sortedCharactersArray.length > 0) {
+  //     // ? and if to test if there is any character with more than 0hp to start with.
+  //     let activePlayerID = sortedCharactersArray.find(
+  //       (char) => char.hp > 0
+  //     )?.id;
+  //     if (activePlayerID) {
+  //       setCharactersArray(
+  //         charactersArray.map((char) => {
+  //           if (char.id === activePlayerID) {
+  //             return {
+  //               ...char,
+  //               isActive: true,
+  //             };
+  //           } else {
+  //             return {
+  //               ...char,
+  //               isActive: false,
+  //             };
+  //           }
+  //         })
+  //       );
+  //       selectedCharacter(
+  //         charactersArray.find((char) => char.id === activePlayerID)
+  //       );
+  //       setTurnCounter(0);
+  //     }
+  //   }
+  // };
   //Next button
   /*
+  On click, get the next character in sortedArray with hp > 0
+  highlight it
+  display it in the edit window
+  if there is no character left (reached last index) start from index[0] and increment 
+  the turncounter by 1
 
    */
 
+  const nextTurn = (sortedCharactersArray) => {
+    if (sortedCharactersArray.length > 0) {
+      for (
+        let index = charIndex;
+        index < sortedCharactersArray.length;
+        index++
+      ) {
+        if (index === 0) {
+          setTurnCounter(turnCounter + 1);
+        }
+        const element = sortedCharactersArray[index];
+
+        if (element.hp > 0) {
+          selectedCharacter(element);
+          setCharactersArray(
+            charactersArray.map((char) => {
+              if (char.id === element.id) {
+                return {
+                  ...char,
+                  isActive: true,
+                };
+              } else {
+                return {
+                  ...char,
+                  isActive: false,
+                };
+              }
+            })
+          );
+          let newIndex = 0;
+          if (index + 1 >= sortedCharactersArray.length) {
+            newIndex = 0;
+          } else {
+            newIndex = index + 1;
+          }
+          setCharIndex(newIndex);
+          return;
+        }
+      }
+    }
+  };
   //Function to add a character to the list
   const addCharacter = (charName, charInit, charHp) => {
     const newCharacter = {
@@ -410,7 +459,7 @@ export default function Home() {
       name: charName,
       init: charInit,
       hp: charHp,
-      isActive : false,
+      isActive: false,
     };
     setCharactersArray([...charactersArray, newCharacter]);
     setCurrentID(currentID + 1);
@@ -429,14 +478,15 @@ export default function Home() {
     setCharacterToEdit(character);
   };
 
+  //Function to update a character
   const updateSelectedCharacter = (updatedCharacter) => {
     const foundChar = charactersArray.find(
-      (char) => char.id === updatedCharacter.id); 
-    
+      (char) => char.id === updatedCharacter.id
+    );
+
     setCharactersArray(
       charactersArray.map((char) => {
         if (char.id === foundChar.id) {
-                    
           return {
             ...char,
             hp: updatedCharacter.hp,
@@ -449,6 +499,24 @@ export default function Home() {
     );
   };
 
+  //Function to reset the Turn Feature
+  const resetTurns = ()=>{
+    setTurnCounter(0);
+    setCharIndex(0);
+    setCharactersArray(
+      charactersArray.map((char) => {
+        
+          return {
+            ...char,
+            isActive: false,
+          };
+        }))
+        setIsStartPressed(false);
+      };
+    
+ 
+  
+
   return (
     <Container>
       <Box sx={{ display: "flex" }}>
@@ -456,14 +524,39 @@ export default function Home() {
           characterToEdit={characterToEdit}
           updateSelectedCharacter={updateSelectedCharacter}
         ></EditSelectedChar>
-
-        <Button
+        {isStartPressed ? (
+          <><Button
+            variant="contained"
+            type="button"
+            onClick={() => nextTurn(sortedCharactersArray)}
+          >
+            Next
+            {turnCounter}
+          </Button>
+          <Button
           variant="contained"
           type="button"
-          onClick={() => startFight()}
+          onClick={() => resetTurns()}
         >
-          Start Fight
+          Reset
+          
         </Button>
+        </>
+        ) : (
+          <Button
+            variant="contained"
+            type="button"
+            onClick={() => {
+              if (sortedCharactersArray.length > 0) {
+                nextTurn(sortedCharactersArray);
+                setIsStartPressed(true);
+              }
+            }}
+          >
+            Start Fight
+          </Button>
+        )}
+
         <AddNewChar addCharacter={addCharacter} />
       </Box>
       <InitTable

@@ -2,8 +2,10 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## What is it for
 
-It is an application to help Dungeon Masters keeping track of fights (Made for our D&D4th ed. but should be good for other RPGs)
+It is an application to help Dungeon Masters with keeping track of fights (Made for our D&D4th ed. but should be good for other RPGs)
+
 You can add characters with their initiative and HP.
+
 A table will display them all ordered by initiative.
 
 
