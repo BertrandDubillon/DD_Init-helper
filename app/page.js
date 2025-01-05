@@ -1,4 +1,5 @@
 "use client";
+import './global.css';
 import {
   Box,
   Container,  
@@ -8,6 +9,9 @@ import { useEffect, useState } from "react";
 import InitTable from "./InitTable";
 import AddNewChar from "./AddNewChar";
 import EditSelectedChar from "./EditSelectedChar";
+import LogicBar from "./LogicBar";
+import MainSection from "./MainSection";
+
 
 /*TODO 
 Remove floating numbers from number inputs
@@ -32,7 +36,7 @@ export default function Home() {
   const [charactersArray, setCharactersArray] = useState([]);
   const [sortedCharactersArray, setSortedCharactersArray] = useState([]);
   const [turnCounter, setTurnCounter] = useState(0);  
-  const [isStartPressed, setIsStartPressed] = useState(false);
+  
   const [isNextTurnTriggered, setIsNextTurnTriggered] = useState(false);
    //ID counter, used to make sure every character has a different key
    const [currentID, setCurrentID] = useState(1);
@@ -41,10 +45,17 @@ export default function Home() {
      init: 0,
      hp: 0,
    });
+   //
 
+   useEffect(() => {
+    console.log('characters array : ' + JSON.stringify(charactersArray));
+    console.log('sorted characters array : ' + JSON.stringify(sortedCharactersArray));
+  }, [charactersArray, sortedCharactersArray]);
+
+    
   // Sorting from highest to lowest Initiative
   useEffect(() => {
-    setSortedCharactersArray(charactersArray.sort((a, b) => b.init - a.init));
+    setSortedCharactersArray([...charactersArray].sort((a, b) => b.init - a.init));
   }, [charactersArray]);
  
   // Handles the next turn trigger
@@ -184,27 +195,46 @@ export default function Home() {
   }
 
   //Function to delete a character from the list.
-  const deleteCharacter = (characterID, charactersArray) => {
+  const deleteCharacter = (characterID) => {
+    console.log('click');
+    console.log(charactersArray);
+    
+    
     const newCharacterArray = charactersArray.filter((char) => {
       return char.id !== characterID;
     });
+    console.log('new character array after delete : ' +JSON.stringify(newCharacterArray));
+
+    
     setCharactersArray(newCharacterArray);
   };
 
   //Function to get the selected character to display it in the edit window
   const selectedCharacter = (character) => {
+    console.log('set', character);
+    if(!character){
+      console.log('nochar');
+      
+    }
+    
     setCharacterToEdit(character);
   };
 
   //Function to update a character
   const updateSelectedCharacter = (updatedCharacter) => {
+    console.log('update');
+    
     const foundChar = charactersArray.find(
       (char) => char.id === updatedCharacter.id
     );
 
     setCharactersArray(
-      charactersArray.map((char) => {
+      [...charactersArray].map((char) => {
+        console.log('hi');
+        
         if (char.id === foundChar.id) {
+          console.log('found');
+          
           return {
             ...char,
             hp: updatedCharacter.hp,
@@ -240,53 +270,57 @@ export default function Home() {
 
   //Home() return
   return (
-    <Container>
-      <Box sx={{ display: "flex" }}>
-        <EditSelectedChar
-          characterToEdit={characterToEdit}
-          updateSelectedCharacter={updateSelectedCharacter}
-        ></EditSelectedChar>
-        {isStartPressed ? (
-          <>
-            <Button
-              variant="contained"
-              type="button"
-              onClick={handleNextTurn}
-            >
-              Next
-              {turnCounter}
-            </Button>
-            <Button
-              variant="contained"
-              type="button"
-              onClick={() => resetTurns()}
-            >
-              Reset
-            </Button>
-          </>
-        ) : (
-          <Button
-            variant="contained"
-            type="button"
-            onClick={() => {
-              if (sortedCharactersArray.length > 0) {
-                handleNextTurn();
-                setIsStartPressed(true);
-              }
-            }}
-          >
-            Start Fight
-          </Button>
-        )}
-
-        <AddNewChar addCharacter={addCharacter} />
-      </Box>
-      <InitTable
-        charactersArray={sortedCharactersArray}
-        deleteCharacter={deleteCharacter}
-        editChar={selectedCharacter}
-      />
+    <Container disableGutters sx={{display: "flex"}}>
+      <LogicBar updateSelectedCharacter={updateSelectedCharacter} characterToEdit={characterToEdit} addCharacter={addCharacter} selectedCharacter={selectedCharacter}/>
+      <MainSection charactersArray={charactersArray} sortedCharactersArray={sortedCharactersArray} deleteCharacter={deleteCharacter} selectedCharacter={selectedCharacter} />
     </Container>
+    // <Container>
+    //   <Box sx={{ display: "flex" }}>
+    //     <EditSelectedChar
+    //       characterToEdit={characterToEdit}
+    //       updateSelectedCharacter={updateSelectedCharacter}
+    //     ></EditSelectedChar>
+    //     {isStartPressed ? (
+    //       <>
+    //         <Button
+    //           variant="contained"
+    //           type="button"
+    //           onClick={handleNextTurn}
+    //         >
+    //           Next
+    //           {turnCounter}
+    //         </Button>
+    //         <Button
+    //           variant="contained"
+    //           type="button"
+    //           onClick={() => resetTurns()}
+    //         >
+    //           Reset
+    //         </Button>
+    //       </>
+    //     ) : (
+    //       <Button
+    //         variant="contained"
+    //         type="button"
+    //         onClick={() => {
+    //           if (sortedCharactersArray.length > 0) {
+    //             handleNextTurn();
+    //             setIsStartPressed(true);
+    //           }
+    //         }}
+    //       >
+    //         Start Fight
+    //       </Button>
+    //     )}
+
+    //     <AddNewChar addCharacter={addCharacter} />
+    //   </Box>
+    //   <InitTable
+    //     charactersArray={sortedCharactersArray}
+    //     deleteCharacter={deleteCharacter}
+    //     editChar={selectedCharacter}
+    //   />
+    // </Container>
   );
 }
 

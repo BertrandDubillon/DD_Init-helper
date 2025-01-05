@@ -5,17 +5,19 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 
 // Component to delete a character from the list, asking for confirmation
-function DeleteCharButton({ deleteCharacter, characterID, charactersArray }) {
+function DeleteCharButton({ deleteCharacter, characterID }) {
   const [isDeleteClicked, setIsDeleteClicked] = useState(false);
   const handleClick = () => {
     setIsDeleteClicked(true);
   };
   return isDeleteClicked ? (
     <Box>
-      <IconButton onClick={() => deleteCharacter(characterID, charactersArray)}>
+      <IconButton onClick={() => deleteCharacter(characterID)}>
         <DoneIcon />
       </IconButton>
-      <IconButton onClick={() => setIsDeleteClicked(false)}>
+      <IconButton onClick={() => {setIsDeleteClicked(false)
+      
+      }}>
         <CloseIcon />
       </IconButton>
     </Box>

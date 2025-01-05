@@ -2,7 +2,8 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from
 import DeleteCharButton from "./DeleteCharButton";
 
 // Table component
-function InitTable({ charactersArray, deleteCharacter, editChar }) {
+function InitTable({ sortedCharactersArray, deleteCharacter, updateSelectedCharacter, selectedCharacter }) {
+        
     function rowBgColor(character) {
       if (character.hp <= 0) {
         return "red";
@@ -25,12 +26,15 @@ function InitTable({ charactersArray, deleteCharacter, editChar }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {charactersArray.map((character) => {
+            {sortedCharactersArray.map((character) => {
               return (
                 <TableRow
                   key={character.id}
-                  onClick={() => {
-                    editChar(character);
+                  onClick={() => {      
+                    console.log('click');
+                    console.log(character);
+                                                        
+                    selectedCharacter(character);                    
                   }}
                   bgcolor={rowBgColor(character)}
                 >
@@ -45,9 +49,9 @@ function InitTable({ charactersArray, deleteCharacter, editChar }) {
                   </TableCell>
                   <TableCell sx={{ textAlign: "center" }}>
                     <DeleteCharButton
-                      deleteCharacter={deleteCharacter}
-                      characterID={character.id}
-                      charactersArray={charactersArray}
+                        
+                        deleteCharacter={deleteCharacter}
+                        characterID={character.id}                        
                     />
                   </TableCell>
                 </TableRow>
