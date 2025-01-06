@@ -1,6 +1,6 @@
 "use client";
 import "./global.css";
-import { Container } from "@mui/material";
+import { Container, Stack, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import LogicBar from "./LogicBar";
 import MainSection from "./MainSection";
@@ -241,7 +241,8 @@ export default function Home() {
 
   //Home() return
   return (
-    <Container disableGutters sx={{ display: "flex" }}>
+    <Box>
+      <Stack direction="row" gap={1}>
       <LogicBar
         isStartPressed={isStartPressed}
         turnCounter={turnCounter}
@@ -252,13 +253,13 @@ export default function Home() {
         addCharacter={addCharacter}
         selectedCharacter={selectedCharacter}
       />
-      <MainSection
-        charactersArray={charactersArray}
+      <MainSection        
         sortedCharactersArray={sortedCharactersArray}
         deleteCharacter={deleteCharacter}
         selectedCharacter={selectedCharacter}
       />
-    </Container>
+      </Stack>
+    </Box>
     // <Container>
     //   <Box sx={{ display: "flex" }}>
     //     <EditSelectedChar

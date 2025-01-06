@@ -2,7 +2,7 @@ const { Box, TextField, Typography, Button } = require("@mui/material");
 const { useState, useEffect } = require("react");
 
 // Component to add a new Character to the state
-function AddNewChar({ addCharacter,charactersArray }) {
+function AddNewChar({ addCharacter }) {
     const defaultName = "";
     const defaultInit = 0;
     const defaultHP = 0;
@@ -21,11 +21,9 @@ function AddNewChar({ addCharacter,charactersArray }) {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",          
-          marginLeft: "auto",
+          flexDirection: "column",
           border: 1,
-          p: 2,
-          width: '300px'
+          p: 2,          
         }}
       >
         <form

@@ -1,16 +1,15 @@
 import { Box, Stack } from "@mui/material";
 import InitTable from "./InitTable";
 
-const MainSection = ({ sortedCharactersArray,charactersArray, deleteCharacter, updateSelectedCharacter, selectedCharacter}) => {
+const MainSection = ({ sortedCharactersArray,deleteCharacter, selectedCharacter}) => {
 
     return (
-        <Box flex={3}
-        sx={{bgcolor:"pink"}}>
-            <InitTable 
-                charactersArray={charactersArray}
+        <Box 
+        sx={{bgcolor:"pink"}}
+        flex={4}>
+            <InitTable                 
                 sortedCharactersArray={sortedCharactersArray}
-                deleteCharacter={deleteCharacter} 
-                updateSelectedCharacter={updateSelectedCharacter} 
+                deleteCharacter={deleteCharacter}                 
                 selectedCharacter={selectedCharacter}              
                 />
         </Box>

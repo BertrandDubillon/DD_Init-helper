@@ -2,21 +2,20 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from
 import DeleteCharButton from "./DeleteCharButton";
 
 // Table component
-function InitTable({ sortedCharactersArray, deleteCharacter, updateSelectedCharacter, selectedCharacter }) {
+function InitTable({ sortedCharactersArray, deleteCharacter, selectedCharacter }) {
         
     function rowBgColor(character) {
       if (character.hp <= 0) {
         return "red";
       }
-      if (character.isActive === true) {
+      if (character.isActive === true) {      
         return "green";
       }
       return "white";
     }
   
-    return (
-      <TableContainer sx={{ width: "max-content", margin: "auto", marginTop: 1 }}>
-        <Table>
+    return (      
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell sx={{ width: 200, textAlign: "center" }}>Name</TableCell>
@@ -26,11 +25,12 @@ function InitTable({ sortedCharactersArray, deleteCharacter, updateSelectedChara
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedCharactersArray.map((character) => {
+            {sortedCharactersArray.map((character) => {              
               return (
                 <TableRow
-                  key={character.id}
-                  onClick={() => {      
+                              
+                key={character.id}
+                onClick={() => {      
                     console.log('click');
                     console.log(character);
                                                         
@@ -58,8 +58,7 @@ function InitTable({ sortedCharactersArray, deleteCharacter, updateSelectedChara
               );
             })}
           </TableBody>
-        </Table>
-      </TableContainer>
+        </Table>      
     );
   }
 export default InitTable;  
