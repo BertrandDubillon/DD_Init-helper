@@ -21,11 +21,11 @@ function AddNewChar({ addCharacter,charactersArray }) {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
-          width: 450,
+          flexDirection: "column",          
           marginLeft: "auto",
           border: 1,
           p: 2,
+          width: '300px'
         }}
       >
         <form
@@ -38,7 +38,7 @@ function AddNewChar({ addCharacter,charactersArray }) {
           }}
         >
           <Box sx={{ display: "flex" }}>
-            <Box padding={2} width={100}>
+            <Box padding={2} >
               Name
             </Box>
             <TextField
@@ -50,7 +50,7 @@ function AddNewChar({ addCharacter,charactersArray }) {
             />
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Box p={2} width={100}>
+            <Box p={2} >
               Init
             </Box>
             <Box sx={{ display: "flex", gap: 1 }}>
@@ -92,7 +92,7 @@ function AddNewChar({ addCharacter,charactersArray }) {
             </Button>
           </Box>
           <Box sx={{ display: "flex" }}>
-            <Box p={2} width={100}>
+            <Box p={2} >
               Hp
             </Box>
             <TextField
