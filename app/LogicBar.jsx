@@ -8,9 +8,9 @@ const LogicBar = ({characterToEdit, updateSelectedCharacter, addCharacter, isSta
     return (
         <Box flex={1} height='100vh' position="sticky" top='0px'>
             <Stack height ='100%' direction="column" gap={1}   >
-                <Box flex={2} sx={{bgcolor: 'blue'}}><AddNewChar addCharacter={addCharacter}/></Box>
-                <Box flex={2} sx={{bgcolor: 'blue'}}><EditSelectedChar characterToEdit={characterToEdit}  updateSelectedCharacter={updateSelectedCharacter} addCharacter={addCharacter}/></Box>
-                <Box flex={1} sx={{bgcolor: 'blue'}}><Turns isStartPressed={isStartPressed} turnCounter={turnCounter} handleNextTurn={handleNextTurn} resetTurns={resetTurns}></Turns></Box>
+                <AddNewChar addCharacter={addCharacter}/>
+                <EditSelectedChar characterToEdit={characterToEdit}  updateSelectedCharacter={updateSelectedCharacter} addCharacter={addCharacter}/>
+                <Turns isStartPressed={isStartPressed} turnCounter={turnCounter} handleNextTurn={handleNextTurn} resetTurns={resetTurns}/>
             </Stack>
         </Box>
 

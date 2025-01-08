@@ -15,8 +15,7 @@ function EditSelectedChar({ characterToEdit, updateSelectedCharacter }) {
     <Box
       sx={{
         display: "flex",
-        flexDirection: "column",        
-        border: 1,
+        flexDirection: "column",
         p: 2,
       }}
     >
