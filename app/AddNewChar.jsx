@@ -24,8 +24,8 @@ function AddNewChar({ addCharacter,charactersArray }) {
           flexDirection: "column",          
           marginLeft: "auto",
           border: 1,
-          p: 2,
-          width: '300px'
+          p: 1,
+          width: '400px'
         }}
       >
         <form
@@ -38,7 +38,7 @@ function AddNewChar({ addCharacter,charactersArray }) {
           }}
         >
           <Box sx={{ display: "flex" }}>
-            <Box padding={2} >
+            <Box padding={1} paddingTop={2} paddingLeft={2}>
               Name
             </Box>
             <TextField
@@ -83,7 +83,7 @@ function AddNewChar({ addCharacter,charactersArray }) {
               </Typography>
             </Box>
             <Button
-              sx={{ alignSelf: "center", marginLeft: "auto" }}
+              sx={{ alignSelf: "center", marginLeft: "8px" }}
               variant="contained"
               color="primary"
               onClick={() => setInit(Math.trunc(Math.random() * 20) + 1)}

@@ -1,5 +1,7 @@
 "use client";
 import "./global.css";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme";
 import { Container } from "@mui/material";
 import { useEffect, useState } from "react";
 import LogicBar from "./LogicBar";
@@ -66,7 +68,7 @@ export default function Home() {
   //Function to reset the Turn Feature
   const resetTurns = () => {
     setTurnCounter(0);
-    setCharactersArray(
+      setCharactersArray(
       charactersArray.map((char) => {
         return {
           ...char,
@@ -241,6 +243,7 @@ export default function Home() {
 
   //Home() return
   return (
+    <ThemeProvider theme={theme}>
     <Container disableGutters sx={{ display: "flex" }}>
       <LogicBar
         isStartPressed={isStartPressed}
@@ -259,52 +262,6 @@ export default function Home() {
         selectedCharacter={selectedCharacter}
       />
     </Container>
-    // <Container>
-    //   <Box sx={{ display: "flex" }}>
-    //     <EditSelectedChar
-    //       characterToEdit={characterToEdit}
-    //       updateSelectedCharacter={updateSelectedCharacter}
-    //     ></EditSelectedChar>
-    //     {isStartPressed ? (
-    //       <>
-    //         <Button
-    //           variant="contained"
-    //           type="button"
-    //           onClick={handleNextTurn}
-    //         >
-    //           Next
-    //           {turnCounter}
-    //         </Button>
-    //         <Button
-    //           variant="contained"
-    //           type="button"
-    //           onClick={() => resetTurns()}
-    //         >
-    //           Reset
-    //         </Button>
-    //       </>
-    //     ) : (
-    //       <Button
-    //         variant="contained"
-    //         type="button"
-    //         onClick={() => {
-    //           if (sortedCharactersArray.length > 0) {
-    //             handleNextTurn();
-    //             setIsStartPressed(true);
-    //           }
-    //         }}
-    //       >
-    //         Start Fight
-    //       </Button>
-    //     )}
-
-    //     <AddNewChar addCharacter={addCharacter} />
-    //   </Box>
-    //   <InitTable
-    //     charactersArray={sortedCharactersArray}
-    //     deleteCharacter={deleteCharacter}
-    //     editChar={selectedCharacter}
-    //   />
-    // </Container>
+    </ThemeProvider>
   );
 }

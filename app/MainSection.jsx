@@ -5,7 +5,7 @@ const MainSection = ({ sortedCharactersArray,charactersArray, deleteCharacter, u
 
     return (
         <Box flex={3}
-        sx={{bgcolor:"pink"}}>
+        sx={{bgcolor:"pink", marginLeft:"400px"}}>
             <InitTable 
                 charactersArray={charactersArray}
                 sortedCharactersArray={sortedCharactersArray}

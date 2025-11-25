@@ -6,7 +6,10 @@ import Turns from "./Turns";
 const LogicBar = ({characterToEdit, updateSelectedCharacter, addCharacter, isStartPressed, turnCounter, handleNextTurn, resetTurns}) => {
 
     return (
-        <Box flex={7}>
+        <Box flex={1} 
+        sx={{position: "fixed",
+        top: 0,
+         }} >
             <Stack direction="column" gap={1}  >
                 <Box flex={2} sx={{bgcolor: 'blue'}}><AddNewChar addCharacter={addCharacter}/></Box>
                 <Box flex={2} sx={{bgcolor: 'blue'}}><EditSelectedChar characterToEdit={characterToEdit}  updateSelectedCharacter={updateSelectedCharacter} addCharacter={addCharacter}/></Box>
