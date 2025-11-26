@@ -4,16 +4,14 @@ import InitTable from "./InitTable";
 const MainSection = ({ sortedCharactersArray,charactersArray, deleteCharacter, updateSelectedCharacter, selectedCharacter}) => {
 
     return (
-        <Box flex={3}
-        sx={{bgcolor:"pink", marginLeft:"400px"}}>
-            <InitTable 
+                <InitTable sx={{bgcolor:"pink", marginLeft:"418px" }}
                 charactersArray={charactersArray}
                 sortedCharactersArray={sortedCharactersArray}
                 deleteCharacter={deleteCharacter} 
                 updateSelectedCharacter={updateSelectedCharacter} 
-                selectedCharacter={selectedCharacter}              
-                />
-        </Box>
+                selectedCharacter={selectedCharacter}>              
+                </InitTable>
+        
 
     );
 };
