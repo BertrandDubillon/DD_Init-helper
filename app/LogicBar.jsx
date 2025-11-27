@@ -3,7 +3,7 @@ import AddNewChar from "./AddNewChar";
 import EditSelectedChar from "./EditSelectedChar";
 import Turns from "./Turns";
 
-const LogicBar = ({characterToEdit, updateSelectedCharacter, addCharacter, isStartPressed, turnCounter, handleNextTurn, resetTurns}) => {
+const LogicBar = ({characterToEdit, updateSelectedCharacter, addCharacter, isStartPressed, turnCounter, handleNextTurn, resetTurns, focusCharacter}) => {
 
     return (
         <Box flex={1} 
@@ -13,7 +13,7 @@ const LogicBar = ({characterToEdit, updateSelectedCharacter, addCharacter, isSta
             <Stack direction="column" gap={1}  >
                 <Box flex={2} sx={{bgcolor: 'blue'}}><AddNewChar addCharacter={addCharacter}/></Box>
                 <Box flex={2} sx={{bgcolor: 'blue'}}><EditSelectedChar characterToEdit={characterToEdit}  updateSelectedCharacter={updateSelectedCharacter} addCharacter={addCharacter}/></Box>
-                <Box flex={1} sx={{bgcolor: 'blue'}}><Turns isStartPressed={isStartPressed} turnCounter={turnCounter} handleNextTurn={handleNextTurn} resetTurns={resetTurns}></Turns></Box>
+                <Box flex={1} sx={{bgcolor: 'blue'}}><Turns isStartPressed={isStartPressed} turnCounter={turnCounter} handleNextTurn={handleNextTurn} resetTurns={resetTurns} focusCharacter={focusCharacter}></Turns></Box>
             </Stack>
         </Box>
 

@@ -1,7 +1,7 @@
 import { Box, Button, Stack } from "@mui/material";
 import { useState } from "react";
 
-const Turns = ({handleNextTurn, resetTurns, isStartPressed, turnCounter}) => {
+const Turns = ({handleNextTurn, resetTurns, isStartPressed, turnCounter, focusCharacter}) => {
    
   
     

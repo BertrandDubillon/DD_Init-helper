@@ -3,7 +3,7 @@ import "./global.css";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import { Container } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import LogicBar from "./LogicBar";
 import MainSection from "./MainSection";
 
@@ -41,7 +41,15 @@ export default function Home() {
     init: 0,
     hp: 0,
   });
-
+  //reference for the character focus function (forwarded by the table)
+  const focusRef = useRef(null)
+  // function to pass to the next turn button
+  const focusCharacter = (id) => {
+    console.log('hi' + focusRef.current)
+ if (focusRef.current) {
+  focusRef.current.scrollToRow(id)
+ }
+  }
   // Sorting from highest to lowest Initiative
   useEffect(() => {
     setSortedCharactersArray(
@@ -87,7 +95,8 @@ export default function Home() {
     setIsNextTurnTriggered(false);
     if (sortedCharactersArray.length > 0) {
       for (let index = 0; index < sortedCharactersArray.length; index++) {
-        const element = sortedCharactersArray[index];
+        const element = sortedCharactersArray[index];        
+        
         // If a character that has not played and has over 0 hp is found
         if (element.hasPlayed === false) {
           if (element.hp > 0) {
@@ -108,8 +117,12 @@ export default function Home() {
                     isActive: false,
                   };
                 }
+                
               })
+              
             );
+            // Focus on it
+            focusCharacter(element.id);
             // exit the turn
             return;
           }
@@ -161,7 +174,7 @@ export default function Home() {
     setCurrentID(currentID + 1);
   };
 
-  //Function to check if a name exist under the form NumberLetter (1A) and increment
+  //Function to check if a name exists under the form NumberLetter (1A) and increments
   // the number if it does.
   const packNames = (charName, charArray) => {
     //testing for a number followed by a letter
@@ -193,7 +206,7 @@ export default function Home() {
         //get the highest number of that array
         let maxNumber = 1;
         allLetterNames.forEach((element) => {
-          const match = element.name.match(regex);
+          const match= element.name.match(regex);
           if (match) {
             if (match[1] > maxNumber) {
               maxNumber = match[1];
@@ -246,6 +259,7 @@ export default function Home() {
     <ThemeProvider theme={theme}>
     <Container disableGutters sx={{ display: "flex" }}>
       <LogicBar
+
         isStartPressed={isStartPressed}
         turnCounter={turnCounter}
         handleNextTurn={handleNextTurn}
@@ -256,6 +270,7 @@ export default function Home() {
         selectedCharacter={selectedCharacter}
       />
       <MainSection
+        focusRef = {focusRef}
         charactersArray={charactersArray}
         sortedCharactersArray={sortedCharactersArray}
         deleteCharacter={deleteCharacter}
