@@ -1,23 +1,25 @@
+import { Height } from "@mui/icons-material";
 import { Box, Button, Stack } from "@mui/material";
 import { useState } from "react";
 
-const Turns = ({handleNextTurn, resetTurns, isStartPressed, turnCounter, focusCharacter}) => {
+const Turns = ({handleNextTurn, resetTurns, isStartPressed, turnCounter, clearTable}) => {
    
   
     
       return(
   
     isStartPressed ? (
-      <Stack gap={2}>
-        <Button variant="contained" type="button" onClick={handleNextTurn}>
-          Next
-          {turnCounter}
+      <Stack direction="row" gap={2}>
+        <Box sx={{height : "50", width : "100", alignContent : 'center', p: 1}}>TURN {turnCounter}</Box>
+        <Button variant="contained" type="button" sx={{width : "100"}} onClick={handleNextTurn}>
+          Next          
         </Button>
         <Button variant="contained" type="button" onClick={resetTurns}>
-          Reset
+          Stop
         </Button>
       </Stack>
     ) : (
+      <Stack direction="row" gap={2}>
       <Button
         variant="contained"
         type="button"
@@ -25,6 +27,16 @@ const Turns = ({handleNextTurn, resetTurns, isStartPressed, turnCounter, focusCh
       >
         Start Fight
       </Button>
+      <Button
+      variant="contained"
+      type="button"
+      color="error"
+      onClick={clearTable}
+    >
+      Clear Table
+    </Button>
+    </Stack>
+      
     ))
       
 };

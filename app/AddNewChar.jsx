@@ -2,7 +2,7 @@ const { Box, TextField, Typography, Button } = require("@mui/material");
 const { useState, useEffect } = require("react");
 
 // Component to add a new Character to the state
-function AddNewChar({ addCharacter,charactersArray }) {
+function AddNewChar({ addCharacter,charactersArray, addNewCharTrigger }) {
     const defaultName = "";
     const defaultInit = 0;
     const defaultHP = 0;
@@ -16,7 +16,16 @@ function AddNewChar({ addCharacter,charactersArray }) {
     const [totalInit, setTotalInit] = useState(defaultTotalInit);
   
     useEffect(() => setTotalInit(init * 1 + fixedInit * 1), [init, fixedInit]);
-  
+    useEffect(()=> clearWindow(),[addNewCharTrigger]);
+
+    // function to reset the window
+    const clearWindow = ()=>{
+        setName(defaultName);
+        setHp(defaultHP);
+        setInit(defaultInit);
+        setFixedInit(defaultFixedInit);      
+    };
+
     return (
       <Box
         sx={{
@@ -115,11 +124,7 @@ function AddNewChar({ addCharacter,charactersArray }) {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => {
-                setName(defaultName);
-                setHp(defaultHP);
-                setInit(defaultInit);
-                setFixedInit(defaultFixedInit);
+              onClick={() => {clearWindow
               }}
             >
               Reset

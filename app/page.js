@@ -31,9 +31,9 @@ export default function Home() {
   const [charactersArray, setCharactersArray] = useState([]);
   const [sortedCharactersArray, setSortedCharactersArray] = useState([]);
   const [isStartPressed, setIsStartPressed] = useState(false);
-  const [turnCounter, setTurnCounter] = useState(0);
-
+  const [turnCounter, setTurnCounter] = useState(1);
   const [isNextTurnTriggered, setIsNextTurnTriggered] = useState(false);
+  const [addNewCharTrigger, setAddNewCharTrigger] = useState(0);
   //ID counter, used to make sure every character has a different key
   const [currentID, setCurrentID] = useState(1);
   const [characterToEdit, setCharacterToEdit] = useState({
@@ -41,15 +41,39 @@ export default function Home() {
     init: 0,
     hp: 0,
   });
+
+  // Function to reset the state when pressing the 'clear table' button
+  const clearTable = () => {
+    setCharactersArray([]);
+    setTurnCounter(1);
+    setCurrentID(1);
+    setCharacterToEdit({ name: "", init: 0, hp: 0,})
+    clearAllRefs();
+    //trigger to reset the AddNewChar component (local state), using UseEffect in it.
+    setAddNewCharTrigger(prev => prev+1);
+
+    };
+
   //reference for the character focus function (forwarded by the table)
   const focusRef = useRef(null)
-  // function to pass to the next turn button
+  // function to pass to the next turn button for focusing on the right row
   const focusCharacter = (id) => {
-    console.log('hi' + focusRef.current)
- if (focusRef.current) {
-  focusRef.current.scrollToRow(id)
- }
+    if (focusRef.current) {
+      focusRef.current.scrollToRow(id)
   }
+  };
+  // Function to clear the ref when deleting a character
+  const delCharacterRef = (id) => {
+    if (focusRef.current){
+      focusRef.current.clear(id)
+    }
+  };
+  // Function to clear all refs when resetting the table
+  const clearAllRefs = () => {
+    if (focusRef.current) {
+      focusRef.current.clearAllRefs()
+  }
+  };
   // Sorting from highest to lowest Initiative
   useEffect(() => {
     setSortedCharactersArray(
@@ -75,7 +99,7 @@ export default function Home() {
 
   //Function to reset the Turn Feature
   const resetTurns = () => {
-    setTurnCounter(0);
+    setTurnCounter(1);
       setCharactersArray(
       charactersArray.map((char) => {
         return {
@@ -219,13 +243,14 @@ export default function Home() {
     }
   };
 
-  //Function to delete a character from the list.
+  //Function to delete a character from the list. Also removes the ref (handling focus) from the table 
   const deleteCharacter = (characterID) => {
     const newCharacterArray = charactersArray.filter((char) => {
       return char.id !== characterID;
     });
 
     setCharactersArray(newCharacterArray);
+    delCharacterRef(characterID);
   };
 
   //Function to get the selected character to display it in the edit window
@@ -268,6 +293,8 @@ export default function Home() {
         characterToEdit={characterToEdit}
         addCharacter={addCharacter}
         selectedCharacter={selectedCharacter}
+        clearTable={clearTable}
+        addNewCharTrigger={addNewCharTrigger}
       />
       <MainSection
         focusRef = {focusRef}

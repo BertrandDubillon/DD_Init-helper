@@ -24,7 +24,19 @@ const InitTable = forwardRef(function InitTable({ sortedCharactersArray, deleteC
         rowEl.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     },
+      // Delete a ref from the table when deleting a character from the table
+  
+      clear(id) {        
+        delete rowRefs.current[id];
+      },
+
+      // Clears the ref object when resetting the table
+      clearAllRefs() {
+        rowRefs.current = {};
+      }
   }));
+
+
 
   // Colors the background of rows according to some rules.
   function rowBgColor(character) {
