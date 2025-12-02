@@ -9,20 +9,21 @@ const Turns = ({handleNextTurn, resetTurns, isStartPressed, turnCounter, clearTa
       return(
   
     isStartPressed ? (
-      <Stack direction="row" gap={2}>
+      <Stack direction="row" gap={2} justifyContent="center">
         <Box sx={{height : "50", width : "100", alignContent : 'center', p: 1}}>TURN {turnCounter}</Box>
-        <Button variant="contained" type="button" sx={{width : "100"}} onClick={handleNextTurn}>
+        <Button variant="contained" color="secondary" type="button" sx={{width : "100"}} onClick={handleNextTurn}>
           Next          
         </Button>
-        <Button variant="contained" type="button" onClick={resetTurns}>
+        <Button variant="contained" color="secondary" type="button" onClick={resetTurns}>
           Stop
         </Button>
       </Stack>
     ) : (
-      <Stack direction="row" gap={2}>
+      <Stack direction="row" gap={2} justifyContent="center">
       <Button
         variant="contained"
         type="button"
+        color="secondary"
         onClick={handleNextTurn}
       >
         Start Fight

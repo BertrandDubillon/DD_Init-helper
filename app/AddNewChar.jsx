@@ -31,8 +31,7 @@ function AddNewChar({ addCharacter,charactersArray, addNewCharTrigger }) {
         sx={{
           display: "flex",
           flexDirection: "column",          
-          marginLeft: "auto",
-          border: 1,
+          marginLeft: "auto", 
           p: 1,
           width: '400px'
         }}
@@ -47,9 +46,9 @@ function AddNewChar({ addCharacter,charactersArray, addNewCharTrigger }) {
           }}
         >
           <Box sx={{ display: "flex" }}>
-            <Box padding={1} paddingTop={2} paddingLeft={2}>
+            <Typography padding={1} paddingTop={2} paddingLeft={2}>
               Name
-            </Box>
+            </Typography>
             <TextField
               id="name"
               value={name}
@@ -59,9 +58,9 @@ function AddNewChar({ addCharacter,charactersArray, addNewCharTrigger }) {
             />
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Box p={2} >
+            <Typography p={2} >
               Init
-            </Box>
+            </Typography>
             <Box sx={{ display: "flex", gap: 1 }}>
               <TextField
                 label="Random"
@@ -94,16 +93,16 @@ function AddNewChar({ addCharacter,charactersArray, addNewCharTrigger }) {
             <Button
               sx={{ alignSelf: "center", marginLeft: "8px" }}
               variant="contained"
-              color="primary"
+              color="secondary"
               onClick={() => setInit(Math.trunc(Math.random() * 20) + 1)}
             >
               Roll
             </Button>
           </Box>
           <Box sx={{ display: "flex" }}>
-            <Box p={2} >
+            <Typography p={2} >
               Hp
-            </Box>
+            </Typography>
             <TextField
               id="hp"
               type="number"
@@ -123,13 +122,13 @@ function AddNewChar({ addCharacter,charactersArray, addNewCharTrigger }) {
           >
             <Button
               variant="contained"
-              color="primary"
+              color="secondary"
               onClick={() => {clearWindow
               }}
             >
               Reset
             </Button>
-            <Button variant="contained" color="primary" type="submit">
+            <Button variant="contained" color="secondary" type="submit">
               Add
             </Button>
           </Box>

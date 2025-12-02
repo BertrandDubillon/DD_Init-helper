@@ -15,8 +15,7 @@ function EditSelectedChar({ characterToEdit, updateSelectedCharacter }) {
     <Box
       sx={{
         display: "flex",
-        flexDirection: "column",        
-        border: 1,
+        flexDirection: "column",
         p: 2,
       }}
     >
@@ -45,9 +44,9 @@ function EditSelectedChar({ characterToEdit, updateSelectedCharacter }) {
           </Typography>
         </Box>
         <Box sx={{ display: "flex" }}>
-          <Box p={2} width={100}>
+          <Typography p={2} width={100}>
             Init
-          </Box>
+          </Typography>
           <TextField
             id="init"
             value={editInit}
@@ -59,9 +58,9 @@ function EditSelectedChar({ characterToEdit, updateSelectedCharacter }) {
           />
         </Box>
         <Box sx={{ display: "flex" }}>
-          <Box p={2} width={100}>
+          <Typography p={2} width={100}>
             Hp
-          </Box>
+          </Typography>
           <TextField
             id="hp"
             type="number"
@@ -75,7 +74,7 @@ function EditSelectedChar({ characterToEdit, updateSelectedCharacter }) {
           <Button
             sx={{ marginTop: 1 }}
             variant="contained"
-            color="primary"
+            color="secondary"
             type="submit"
           >
             Save Changes

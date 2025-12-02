@@ -7,13 +7,13 @@ const LogicBar = ({characterToEdit, updateSelectedCharacter, addCharacter, isSta
 
     return (
         <Box flex={1} 
-        sx={{position: "fixed",
-        top: 0,
+        sx={{position: "fixed", 
+        top: 0,        
          }} >
             <Stack direction="column" gap={1}  >
-                <Box flex={2} sx={{bgcolor: 'blue'}}><AddNewChar addCharacter={addCharacter} addNewCharTrigger={addNewCharTrigger}/></Box>
-                <Box flex={2} sx={{bgcolor: 'blue'}}><EditSelectedChar characterToEdit={characterToEdit}  updateSelectedCharacter={updateSelectedCharacter} addCharacter={addCharacter}/></Box>
-                <Box flex={1} sx={{bgcolor: 'blue'}}><Turns isStartPressed={isStartPressed} turnCounter={turnCounter} handleNextTurn={handleNextTurn} resetTurns={resetTurns} clearTable={clearTable}></Turns></Box>
+                <Box flex={2} sx={{bgcolor: 'primary.main', border:1, borderColor:'secondary.main'}}><AddNewChar addCharacter={addCharacter} addNewCharTrigger={addNewCharTrigger}/></Box>
+                <Box flex={2} sx={{bgcolor: 'primary.main', border:1, borderColor:'secondary.main'}}><EditSelectedChar characterToEdit={characterToEdit}  updateSelectedCharacter={updateSelectedCharacter} addCharacter={addCharacter}/></Box>
+                <Box flex={1} sx={{bgcolor: 'primary.main'}}><Turns isStartPressed={isStartPressed} turnCounter={turnCounter} handleNextTurn={handleNextTurn} resetTurns={resetTurns} clearTable={clearTable}></Turns></Box>
             </Stack>
         </Box>
 
