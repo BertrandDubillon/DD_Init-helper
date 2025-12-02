@@ -10,7 +10,7 @@ const Turns = ({handleNextTurn, resetTurns, isStartPressed, turnCounter, clearTa
   
     isStartPressed ? (
       <Stack direction="row" gap={2} justifyContent="center">
-        <Box sx={{height : "50", width : "100", alignContent : 'center', p: 1}}>TURN {turnCounter}</Box>
+        <Box sx={{height : "50", width : "100", alignContent : 'center', p: 1, color:"white"}}>TURN {turnCounter}</Box>
         <Button variant="contained" color="secondary" type="button" sx={{width : "100"}} onClick={handleNextTurn}>
           Next          
         </Button>

@@ -123,7 +123,7 @@ function AddNewChar({ addCharacter,charactersArray, addNewCharTrigger }) {
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => {clearWindow
+              onClick={() => {clearWindow()
               }}
             >
               Reset

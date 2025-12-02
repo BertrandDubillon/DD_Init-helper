@@ -282,7 +282,7 @@ export default function Home() {
   //Home() return
   return (
     <ThemeProvider theme={theme}>
-    <Container disableGutters sx={{ display: "flex", margin:0, }}>
+    <Container maxWidth="false" disableGutters sx={{ display: "flex", margin:0, }}>
       <LogicBar
 
         isStartPressed={isStartPressed}

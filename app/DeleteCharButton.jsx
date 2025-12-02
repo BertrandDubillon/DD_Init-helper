@@ -13,17 +13,17 @@ function DeleteCharButton({ deleteCharacter, characterID }) {
   return isDeleteClicked ? (
     <Box>
       <IconButton onClick={() => deleteCharacter(characterID)}>
-        <DoneIcon />
+        <DoneIcon sx={{color:"white"}} />
       </IconButton>
       <IconButton onClick={() => {setIsDeleteClicked(false)
       
       }}>
-        <CloseIcon />
+        <CloseIcon sx={{color:"white"}} />
       </IconButton>
     </Box>
   ) : (
-    <IconButton aria-label="delete" onClick={handleClick}>
-      <DeleteIcon />
+    <IconButton aria-label="delete" onClick={handleClick} >
+      <DeleteIcon sx={{color:"white"}}/>
     </IconButton>
   );
 }

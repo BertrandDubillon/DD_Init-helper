@@ -10,7 +10,7 @@ const theme = createTheme({
               light: "", // Optional lighter shade 
               dark: "", // Optional darker shade 
               contrastText: "#fff",},
-              tertiary: { main: "#82ccdd", // Your secondary color 
+              tertiary: { main: "#466f91", // Your secondary color 
                 light: "", // Optional lighter shade 
                 dark: "", // Optional darker shade 
                 contrastText: "#fff",},
@@ -18,7 +18,7 @@ const theme = createTheme({
               light: "", // Optional lighter shade 
               dark: "", // Optional darker shade 
               contrastText: "#fff",}, 
-            error: { main: "#e55039", // Your fourth color 
+            error: { main: "#812c2c", // Your fourth color 
               light: "", // Optional lighter shade 
               dark: "", // Optional darker shade 
               contrastText: "#fff",},
@@ -33,6 +33,50 @@ const theme = createTheme({
         styleOverrides: {
           root: {
             fontSize: "0.75rem",   // ← make all buttons smaller
+          },
+        },
+      },
+      MuiInputBase: {
+        styleOverrides: {
+          root: {
+            color: 'white', // text color
+          },
+        },
+      },  
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: {
+            color: '#ffffff', // input text
+            '& .MuiInputBase-input': {
+              color: '#ffffff', // typed text
+            },
+            
+          },
+          notchedOutline: {
+            borderColor: '#ffffff',
+            "&.Mui-focused": {
+      borderColor: '#6F7E8C',
+    }, // default
+          },
+          notchedOutline: {
+            borderColor: '#ffffff', // default
+          },
+          focused : {
+            borderColor: '#ffffff',
+            color: "red",
+          }
+        },
+      },
+      MuiInputLabel: {
+        styleOverrides: {
+          root: {
+            color: '#ffffff', // label
+            '&.Mui-focused': {
+              color: '#ffffff',
+            },
+            '&.Mui-error': {
+              color: '#f44336',
+            },
           },
         },
       },

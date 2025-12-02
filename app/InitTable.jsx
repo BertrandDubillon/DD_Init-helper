@@ -40,22 +40,26 @@ const InitTable = forwardRef(function InitTable({ sortedCharactersArray, deleteC
 
   // Colors the background of rows according to some rules.
   function rowBgColor(character) {
-    if (character.hp <= 0) return "red";
-    if (character.isActive) return "green";
-    return "white";
+    if (character.hp <= 0) return "error.main";
+    if (character.isActive) return "secondary.main";
+    return "primary.main";
   }
 
   return (
-    <TableContainer sx={{ marginLeft: "418px", width: "calc(100% - 418px)", height : "100vh" }}>
-      <Table stickyHeader sx={{ tableLayout : "fixed", width: "100%" }}>
+    <TableContainer sx={{ marginLeft: "420px", width: "calc(100% - 420px)", height : "100vh", backgroundColor: 'primary.main', }}>
+      <Table stickyHeader sx={{ tableLayout : "fixed", width: "100%", backgroundColor: 'secondary.main',   }}>
         
         {/* HEADER */}
-        <TableHead>
-          <TableRow sx={{ width: "100%" }}>
-            <TableCell sx={{ width: "30%", textAlign: "center" }}>Name</TableCell>
-            <TableCell sx={{ width: "27,5%", textAlign: "center" }}>Init</TableCell>
-            <TableCell sx={{ width: "27,5%", textAlign: "center" }}>Hp</TableCell>
-            <TableCell sx={{ width: "15%", textAlign: "center" }}>X</TableCell>
+        <TableHead sx={{border:"5px solid", borderColor:"tertiary.main",}} >
+          <TableRow sx={{ width: "100%", backgroundColor: 'primary.main', }}>
+            <TableCell sx={{ width: "30%", textAlign: "center", backgroundColor: 'secondary.main', color:"white", fontSize:"1rem", border: '1px solid', borderRight:"none",
+            borderColor: 'tertiary.main'  }}>NAME</TableCell>
+            <TableCell sx={{ width: "27,5%", textAlign: "center", backgroundColor: 'secondary.main', color:"white", fontSize:"1rem", border: '1px solid', borderRight:"none",
+            borderColor: 'tertiary.main' }}>INIT</TableCell>
+            <TableCell sx={{ width: "27,5%", textAlign: "center", backgroundColor: 'secondary.main', color:"white", fontSize:"1rem", border: '1px solid', borderRight:"none",
+            borderColor: 'tertiary.main' }}>HP</TableCell>
+            <TableCell sx={{ width: "15%", textAlign: "center", backgroundColor: 'secondary.main', color:"white", fontSize:"1rem", border: '1px solid',
+            borderColor: 'tertiary.main' }}>X</TableCell>
           </TableRow>
         </TableHead>
 
@@ -70,21 +74,24 @@ const InitTable = forwardRef(function InitTable({ sortedCharactersArray, deleteC
                 width: "100%",
                 bgcolor: rowBgColor(character),
                 cursor: "pointer",
+                '& .MuiTableCell-root': {
+      borderBottom: '1px solid',
+      borderColor: 'tertiary.main'},
               }}
             >
-              <TableCell sx={{ width: "30%", textAlign: "center" }}>
+              <TableCell sx={{ width: "30%", textAlign: "center", color:"white", }}>
                 {character.name}
               </TableCell>
 
-              <TableCell sx={{ width: "30%", textAlign: "center" }}>
+              <TableCell sx={{ width: "30%", textAlign: "center", color:"white" }}>
                 {character.init}
               </TableCell>
 
-              <TableCell sx={{ width: "30%", textAlign: "center" }}>
+              <TableCell sx={{ width: "30%", textAlign: "center", color:"white" }}>
                 {character.hp}
               </TableCell>
 
-              <TableCell sx={{ width: "10%", textAlign: "center" }}>
+              <TableCell sx={{ width: "10%", textAlign: "center", color:"white" }}>
                 <DeleteCharButton
                   deleteCharacter={deleteCharacter}
                   characterID={character.id}
