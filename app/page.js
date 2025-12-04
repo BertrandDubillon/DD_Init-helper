@@ -1,19 +1,18 @@
 "use client";
-import {
-  Box,
-  Container,  
-  Button,  
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import InitTable from "./InitTable";
-import AddNewChar from "./AddNewChar";
-import EditSelectedChar from "./EditSelectedChar";
+import "./global.css";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme";
+import { Container } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import LogicBar from "./LogicBar";
+import MainSection from "./MainSection";
 
 /*TODO 
 Remove floating numbers from number inputs
 Styling the table
 Add a cool Icon for the tab :)
 Make the table dragable, and focus on the higlighted row (current turn)
+let the 0 if it's not in front of other numbers in the edit window
 
 Saving progress
   - Save the character list and the number of turns and current player locally
@@ -31,29 +30,88 @@ export default function Home() {
   //State
   const [charactersArray, setCharactersArray] = useState([]);
   const [sortedCharactersArray, setSortedCharactersArray] = useState([]);
-  const [turnCounter, setTurnCounter] = useState(0);  
   const [isStartPressed, setIsStartPressed] = useState(false);
+  const [turnCounter, setTurnCounter] = useState(1);
   const [isNextTurnTriggered, setIsNextTurnTriggered] = useState(false);
-   //ID counter, used to make sure every character has a different key
-   const [currentID, setCurrentID] = useState(1);
-   const [characterToEdit, setCharacterToEdit] = useState({
-     name: "",
-     init: 0,
-     hp: 0,
-   });
+  const [addNewCharTrigger, setAddNewCharTrigger] = useState(0);
+  //ID counter, used to make sure every character has a different key
+  const [currentID, setCurrentID] = useState(1);
+  const [characterToEdit, setCharacterToEdit] = useState({
+    name: "",
+    init: 0,
+    hp: 0,
+  });
 
+  // Function to reset the state when pressing the 'clear table' button
+  const clearTable = () => {
+    setCharactersArray([]);
+    setTurnCounter(1);
+    setCurrentID(1);
+    setCharacterToEdit({ name: "", init: 0, hp: 0,})
+    clearAllRefs();
+    //trigger to reset the AddNewChar component (local state), using UseEffect in it.
+    setAddNewCharTrigger(prev => prev+1);
+
+    };
+
+  //reference for the character focus function (forwarded by the table)
+  const focusRef = useRef(null)
+  // function to pass to the next turn button for focusing on the right row
+  const focusCharacter = (id) => {
+    if (focusRef.current) {
+      focusRef.current.scrollToRow(id)
+  }
+  };
+  // Function to clear the ref when deleting a character
+  const delCharacterRef = (id) => {
+    if (focusRef.current){
+      focusRef.current.clear(id)
+    }
+  };
+  // Function to clear all refs when resetting the table
+  const clearAllRefs = () => {
+    if (focusRef.current) {
+      focusRef.current.clearAllRefs()
+  }
+  };
   // Sorting from highest to lowest Initiative
   useEffect(() => {
-    setSortedCharactersArray(charactersArray.sort((a, b) => b.init - a.init));
+    setSortedCharactersArray(
+      [...charactersArray].sort((a, b) => b.init - a.init)
+    );
   }, [charactersArray]);
- 
+
   // Handles the next turn trigger
-  useEffect(()=>{
+  useEffect(() => {
     if (isNextTurnTriggered) {
-      nextTurn(sortedCharactersArray);      
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[isNextTurnTriggered]);
+      nextTurn(sortedCharactersArray);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isNextTurnTriggered]);
+
+  //Function to handle the next turn trigger
+  const handleNextTurn = () => {
+    if (sortedCharactersArray.length > 0) {
+      setIsStartPressed(true);
+      setIsNextTurnTriggered(true);
+    }
+  };
+
+  //Function to reset the Turn Feature
+  const resetTurns = () => {
+    setTurnCounter(1);
+      setCharactersArray(
+      charactersArray.map((char) => {
+        return {
+          ...char,
+          isActive: false,
+          hasPlayed: false,
+        };
+      })
+    );
+    setIsStartPressed(false);
+    setIsNextTurnTriggered(false);
+  };
 
   //Function to track fights
   const nextTurn = (sortedCharactersArray) => {
@@ -62,6 +120,7 @@ export default function Home() {
     if (sortedCharactersArray.length > 0) {
       for (let index = 0; index < sortedCharactersArray.length; index++) {
         const element = sortedCharactersArray[index];        
+        
         // If a character that has not played and has over 0 hp is found
         if (element.hasPlayed === false) {
           if (element.hp > 0) {
@@ -82,45 +141,50 @@ export default function Home() {
                     isActive: false,
                   };
                 }
+                
               })
-            ); 
-            // exit the turn           
+              
+            );
+            // Focus on it
+            focusCharacter(element.id);
+            // exit the turn
             return;
           }
         }
       }
       // if no valid character is found, resets all of them
       //Checks if any character has more than 0 hp to continue
-      const allDead = sortedCharactersArray.every((char)=>{ return char.hp<=0});
+      const allDead = sortedCharactersArray.every((char) => {
+        return char.hp <= 0;
+      });
 
       //If there is at least one character alive
-      if (!allDead){
-        
-      //resets the properties
-      setCharactersArray(
-        charactersArray.map((char) => {
-          return {
-            ...char,
-            isActive: false,
-            hasPlayed: false,
-          };
-        })
-      );
-      //increment the turn counter
-      setTurnCounter(turnCounter + 1);
-      //trigger the next turn
-      setTimeout(() => {
-        setIsNextTurnTriggered(true);
-      }, 0);           
+      if (!allDead) {
+        //resets the properties
+        setCharactersArray(
+          charactersArray.map((char) => {
+            return {
+              ...char,
+              isActive: false,
+              hasPlayed: false,
+            };
+          })
+        );
+        //increment the turn counter
+        setTurnCounter(turnCounter + 1);
+        //trigger the next turn
+        setTimeout(() => {
+          setIsNextTurnTriggered(true);
+        }, 0);
+      }
+      //if they're all dead, do not do anything
     }
-    //if they're all dead, do not do anything    
   };
-}
 
   //Function to add a character to the list
   const addCharacter = (charName, charInit, charHp) => {
     charName = packNames(charName, charactersArray);
-    
+
     const newCharacter = {
       id: currentID,
       name: charName,
@@ -129,66 +193,64 @@ export default function Home() {
       isActive: false,
       hasPlayed: false,
     };
-    
+
     setCharactersArray([...charactersArray, newCharacter]);
     setCurrentID(currentID + 1);
-  
   };
-  
-  //Function to check if a name exist under the form NumberLetter (1A) and increment
+
+  //Function to check if a name exists under the form NumberLetter (1A) and increments
   // the number if it does.
-  const packNames = (charName, charArray)=>{  
-    //testing for a number followed by a letter  
+  const packNames = (charName, charArray) => {
+    //testing for a number followed by a letter
     const regex = /^(\d+)([A-Z])$/;
     //checking if the name matches the regex
     const match = charName.match(regex);
     //if not, use the charName
-    if (!match){
-      return charName
+    if (!match) {
+      return charName;
     }
 
     //if it does, check if it exists in the array
-    else {      
-      const existsInArray = charArray.find((char)=>char.name === charName)
+    else {
+      const existsInArray = charArray.find((char) => char.name === charName);
       //if it doesn't exist, use the charName
-      if (!existsInArray){
-        return charName
+      if (!existsInArray) {
+        return charName;
       }
-      //if it does exist, find the highest number related to the letter    
-      else{
+      //if it does exist, find the highest number related to the letter
+      else {
         //destructuring the match array to get the number and letter in variables
-       const [_, number, letter] = match;
+        const [_, number, letter] = match;
         //looking for all names in the array with that letter
-        const allLetterNames = charArray.filter((char)=>{
-          const match = (char.name).match(regex);
-          return (match && (match[2]===letter));
-          
-          
-        })
-       
+        const allLetterNames = charArray.filter((char) => {
+          const match = char.name.match(regex);
+          return match && match[2] === letter;
+        });
+
         //get the highest number of that array
         let maxNumber = 1;
-        allLetterNames.forEach(element => {
-          const match = (element.name).match(regex);
-          if(match){
-            if (match[1] > maxNumber){
+        allLetterNames.forEach((element) => {
+          const match= element.name.match(regex);
+          if (match) {
+            if (match[1] > maxNumber) {
               maxNumber = match[1];
             }
           }
-          
-        }); 
-        //returning the highest number+1 and letter       
-        return `${(maxNumber*1)+1}${letter}`
+        });
+        //returning the highest number+1 and letter
+        return `${maxNumber * 1 + 1}${letter}`;
       }
     }
-  }
+  };
 
-  //Function to delete a character from the list.
-  const deleteCharacter = (characterID, charactersArray) => {
+  //Function to delete a character from the list. Also removes the ref (handling focus) from the table 
+  const deleteCharacter = (characterID) => {
     const newCharacterArray = charactersArray.filter((char) => {
       return char.id !== characterID;
     });
+
     setCharactersArray(newCharacterArray);
+    delCharacterRef(characterID);
   };
 
   //Function to get the selected character to display it in the edit window
@@ -203,7 +265,7 @@ export default function Home() {
     );
 
     setCharactersArray(
-      charactersArray.map((char) => {
+      [...charactersArray].map((char) => {
         if (char.id === foundChar.id) {
           return {
             ...char,
@@ -217,76 +279,31 @@ export default function Home() {
     );
   };
 
-  //Function to handle the next turn trigger
-  const handleNextTurn = ()=>{
-    setIsNextTurnTriggered(true);
-  }
-
-  //Function to reset the Turn Feature
-  const resetTurns = () => {
-    setTurnCounter(0);    
-    setCharactersArray(
-      charactersArray.map((char) => {
-        return {
-          ...char,
-          isActive: false,
-          hasPlayed: false,
-        };
-      })
-    );
-    setIsStartPressed(false);
-    setIsNextTurnTriggered(false);
-  };
-
   //Home() return
   return (
-    <Container>
-      <Box sx={{ display: "flex" }}>
-        <EditSelectedChar
-          characterToEdit={characterToEdit}
-          updateSelectedCharacter={updateSelectedCharacter}
-        ></EditSelectedChar>
-        {isStartPressed ? (
-          <>
-            <Button
-              variant="contained"
-              type="button"
-              onClick={handleNextTurn}
-            >
-              Next
-              {turnCounter}
-            </Button>
-            <Button
-              variant="contained"
-              type="button"
-              onClick={() => resetTurns()}
-            >
-              Reset
-            </Button>
-          </>
-        ) : (
-          <Button
-            variant="contained"
-            type="button"
-            onClick={() => {
-              if (sortedCharactersArray.length > 0) {
-                handleNextTurn();
-                setIsStartPressed(true);
-              }
-            }}
-          >
-            Start Fight
-          </Button>
-        )}
+    <ThemeProvider theme={theme}>
+    <Container maxWidth="false" disableGutters sx={{ display: "flex", margin:0, }}>
+      <LogicBar
 
-        <AddNewChar addCharacter={addCharacter} />
-      </Box>
-      <InitTable
-        charactersArray={sortedCharactersArray}
+        isStartPressed={isStartPressed}
+        turnCounter={turnCounter}
+        handleNextTurn={handleNextTurn}
+        resetTurns={resetTurns}
+        updateSelectedCharacter={updateSelectedCharacter}
+        characterToEdit={characterToEdit}
+        addCharacter={addCharacter}
+        selectedCharacter={selectedCharacter}
+        clearTable={clearTable}
+        addNewCharTrigger={addNewCharTrigger}
+      />
+      <MainSection
+        focusRef = {focusRef}
+        charactersArray={charactersArray}
+        sortedCharactersArray={sortedCharactersArray}
         deleteCharacter={deleteCharacter}
-        editChar={selectedCharacter}
+        selectedCharacter={selectedCharacter}
       />
     </Container>
+    </ThemeProvider>
   );
 }
-

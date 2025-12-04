@@ -2,7 +2,7 @@ const { Box, TextField, Typography, Button } = require("@mui/material");
 const { useState, useEffect } = require("react");
 
 // Component to add a new Character to the state
-function AddNewChar({ addCharacter,charactersArray }) {
+function AddNewChar({ addCharacter,charactersArray, addNewCharTrigger }) {
     const defaultName = "";
     const defaultInit = 0;
     const defaultHP = 0;
@@ -16,16 +16,24 @@ function AddNewChar({ addCharacter,charactersArray }) {
     const [totalInit, setTotalInit] = useState(defaultTotalInit);
   
     useEffect(() => setTotalInit(init * 1 + fixedInit * 1), [init, fixedInit]);
-  
+    useEffect(()=> clearWindow(),[addNewCharTrigger]);
+
+    // function to reset the window
+    const clearWindow = ()=>{
+        setName(defaultName);
+        setHp(defaultHP);
+        setInit(defaultInit);
+        setFixedInit(defaultFixedInit);      
+    };
+
     return (
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
-          width: 450,
-          marginLeft: "auto",
-          border: 1,
-          p: 2,
+          flexDirection: "column",          
+          marginLeft: "auto", 
+          p: 1,
+          width: '400px'
         }}
       >
         <form
@@ -37,22 +45,23 @@ function AddNewChar({ addCharacter,charactersArray }) {
               addCharacter(name, totalInit, hp);
           }}
         >
-          <Box sx={{ display: "flex" }}>
-            <Box padding={2} width={100}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography padding={1} paddingTop={2} paddingLeft={2}>
               Name
-            </Box>
+            </Typography>
             <TextField
               id="name"
+              variant = "outlined"              
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
               }}
             />
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Box p={2} width={100}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Typography p={2} >
               Init
-            </Box>
+            </Typography>
             <Box sx={{ display: "flex", gap: 1 }}>
               <TextField
                 label="Random"
@@ -83,18 +92,18 @@ function AddNewChar({ addCharacter,charactersArray }) {
               </Typography>
             </Box>
             <Button
-              sx={{ alignSelf: "center", marginLeft: "auto" }}
+              sx={{ alignSelf: "center", marginLeft: "8px" }}
               variant="contained"
-              color="primary"
+              color="secondary"
               onClick={() => setInit(Math.trunc(Math.random() * 20) + 1)}
             >
               Roll
             </Button>
           </Box>
-          <Box sx={{ display: "flex" }}>
-            <Box p={2} width={100}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography p={2} >
               Hp
-            </Box>
+            </Typography>
             <TextField
               id="hp"
               type="number"
@@ -114,17 +123,13 @@ function AddNewChar({ addCharacter,charactersArray }) {
           >
             <Button
               variant="contained"
-              color="primary"
-              onClick={() => {
-                setName(defaultName);
-                setHp(defaultHP);
-                setInit(defaultInit);
-                setFixedInit(defaultFixedInit);
+              color="secondary"
+              onClick={() => {clearWindow()
               }}
             >
               Reset
             </Button>
-            <Button variant="contained" color="primary" type="submit">
+            <Button variant="contained" color="secondary" type="submit">
               Add
             </Button>
           </Box>
