@@ -45,19 +45,20 @@ function AddNewChar({ addCharacter,charactersArray, addNewCharTrigger }) {
               addCharacter(name, totalInit, hp);
           }}
         >
-          <Box sx={{ display: "flex" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <Typography padding={1} paddingTop={2} paddingLeft={2}>
               Name
             </Typography>
             <TextField
               id="name"
+              variant = "outlined"              
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
               }}
             />
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Typography p={2} >
               Init
             </Typography>
@@ -99,7 +100,7 @@ function AddNewChar({ addCharacter,charactersArray, addNewCharTrigger }) {
               Roll
             </Button>
           </Box>
-          <Box sx={{ display: "flex" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <Typography p={2} >
               Hp
             </Typography>

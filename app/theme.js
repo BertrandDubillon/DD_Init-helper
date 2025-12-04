@@ -25,7 +25,6 @@ const theme = createTheme({
       },
     },
 
-    // ensure input text color is white
     MuiInputBase: {
       styleOverrides: {
         input: {
@@ -34,53 +33,38 @@ const theme = createTheme({
       },
     },
 
-    // OUTLINED INPUT: highly specific, handles default/hover/focus/error
     MuiOutlinedInput: {
       styleOverrides: {
-        // root gets focus/hover rules (use function to access theme)
         root: ({ theme }) => ({
-          color: theme.palette.common.white,
-          // typed text inside the input
-          '& .MuiInputBase-input': {
-            color: theme.palette.common.white,
-          },
+          borderRadius: theme.shape.borderRadius,
 
-          // default outline (use a single selector targeting notchedOutline)
-          // note: '.MuiOutlinedInput-notchedOutline' is the runtime class on the fieldset
-          '& .MuiOutlinedInput-notchedOutline': {
+          "& .MuiOutlinedInput-notchedOutline": {
             borderColor: theme.palette.secondary.main,
-            borderWidth: '1px',
+            borderRadius: theme.shape.borderRadius,
           },
 
-          // hover — higher specificity by repeating the selector
-          '&:hover .MuiOutlinedInput-notchedOutline': {
+          "&:hover .MuiOutlinedInput-notchedOutline": {
             borderColor: theme.palette.common.white,
           },
 
-          // focused — MUI applies Mui-focused on the root element
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: theme.palette.secondary.main,
           },
 
-          // error
-          '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+          "&.Mui-error .MuiOutlinedInput-notchedOutline": {
             borderColor: theme.palette.error.main,
           },
 
-          // if you still see odd fallbacks, this makes the rule twice as specific
-          '&& .MuiOutlinedInput-notchedOutline': {
-            // noop duplicate to raise specificity if needed
+          "& input:-webkit-autofill": {
+            WebkitBoxShadow: `0 0 0 100px ${theme.palette.primary.main} inset`,
+            WebkitTextFillColor: "#ffffff",
+            caretColor: "#ffffff",
+            borderRadius: theme.shape.borderRadius,
           },
-        }),
-
-        // override the notchedOutline slot itself as well (important)
-        notchedOutline: ({ theme }) => ({
-          borderColor: theme.palette.secondary.main,
         }),
       },
     },
 
-    // LABEL
     MuiInputLabel: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -91,32 +75,29 @@ const theme = createTheme({
       },
     },
 
-    // AUTOCOMPLETE - explicitly style the input root and dropdown pieces
     MuiAutocomplete: {
       styleOverrides: {
-        // this targets the wrapper around the input used by Autocomplete
         inputRoot: ({ theme }) => ({
           color: theme.palette.common.white,
 
-          // these three ensure Autocomplete's wrapper honours our notchedOutline styles
           '& .MuiOutlinedInput-notchedOutline': {
             borderColor: theme.palette.secondary.main,
           },
+
           '&:hover .MuiOutlinedInput-notchedOutline': {
             borderColor: theme.palette.secondary.main,
           },
+
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
             borderColor: theme.palette.secondary.main,
           },
         }),
 
-        // actual input element (typed text / placeholder)
         input: ({ theme }) => ({
           color: theme.palette.common.white,
           '&::placeholder': { color: theme.palette.common.white },
         }),
 
-        // dropdown paper / listbox colors
         paper: ({ theme }) => ({
           backgroundColor: theme.palette.background.paper,
           color: theme.palette.common.white,
