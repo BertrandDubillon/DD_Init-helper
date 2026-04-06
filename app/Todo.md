@@ -2,10 +2,10 @@
 
 // NextTurn function must focus on the right name in the name list (useRef, forwardRef + useImperativeHandle) - done
 
+// Add a reset all button somwhere to have a clean slate - done
 
+// Remove useEffect to sort the characterArray, apparently I dont need it. Derived, compute, useMemo
 
-
-// Add a reset all button somwhere to have a clean slate
 
 // Reduce all font size
 
@@ -14,3 +14,5 @@
 // Saving current state to the LocalStorage. When to do that ?
 
 // scroll a fixed number of pixel to 'jump line by line'
+
+// fix the long names overflowing on other columns

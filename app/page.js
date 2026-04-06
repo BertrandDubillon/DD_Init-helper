@@ -15,7 +15,8 @@ Make the table dragable, and focus on the higlighted row (current turn)
 let the 0 if it's not in front of other numbers in the edit window
 
 Saving progress
-  - Save the character list and the number of turns and current player locally
+  - When the website loads, check if there is data in the localstorage for :
+  charactersArray
 */
 
 /*Bugs to fix or features to correct/improve
@@ -33,9 +34,7 @@ export default function Home() {
   const [isStartPressed, setIsStartPressed] = useState(false);
   const [turnCounter, setTurnCounter] = useState(1);
   const [isNextTurnTriggered, setIsNextTurnTriggered] = useState(false);
-  const [addNewCharTrigger, setAddNewCharTrigger] = useState(0);
-  //ID counter, used to make sure every character has a different key
-  const [currentID, setCurrentID] = useState(1);
+  const [addNewCharTrigger, setAddNewCharTrigger] = useState(0);  
   const [characterToEdit, setCharacterToEdit] = useState({
     name: "",
     init: 0,
@@ -45,8 +44,7 @@ export default function Home() {
   // Function to reset the state when pressing the 'clear table' button
   const clearTable = () => {
     setCharactersArray([]);
-    setTurnCounter(1);
-    setCurrentID(1);
+    setTurnCounter(1);    
     setCharacterToEdit({ name: "", init: 0, hp: 0,})
     clearAllRefs();
     //trigger to reset the AddNewChar component (local state), using UseEffect in it.
@@ -180,22 +178,32 @@ export default function Home() {
       //if they're all dead, do not do anything
     }
   };
+  //Function to check for the highest ID and increment it before adding a character
+  const getNextID = (charactersArray) => {
+    // if it's the first character, assign 1
+    if (charactersArray.length === 0){
+      return 1
+      }
+    // if not get the hihest ID and increment it
+    const maxID = Math.max(...charactersArray.map(el => el.id));
+    return maxID + 1;
+  };
 
   //Function to add a character to the list
   const addCharacter = (charName, charInit, charHp) => {
     charName = packNames(charName, charactersArray);
 
     const newCharacter = {
-      id: currentID,
+      id: getNextID(charactersArray),
       name: charName,
       init: charInit,
       hp: charHp,
       isActive: false,
       hasPlayed: false,
     };
-
-    setCharactersArray([...charactersArray, newCharacter]);
-    setCurrentID(currentID + 1);
+    
+    
+    setCharactersArray([...charactersArray, newCharacter]);  
   };
 
   //Function to check if a name exists under the form NumberLetter (1A) and increments
